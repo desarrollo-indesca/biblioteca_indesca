@@ -3,32 +3,33 @@ from django.db import transaction
 from core.models import Informe, Descriptor, Empresa
 from biblioteca_digital.settings import BASE_DIR
 import csv
+import openpyxl
 
 class Command(BaseCommand):
     help = "Carga los libros en la base de datos junto a los posibles descriptores"
 
     def handle(self, *args, **options):
-        with open(BASE_DIR.__str__() + "\\INfORMES.csv", 'r', encoding='unicode_escape') as file:
-            reader = csv.reader(file,delimiter=';')
-            next(reader)
-            with transaction.atomic():
-                for row in reader:
+        print(BASE_DIR.__str__() + "\\INFORMES.xlsx")
+        dataframe = openpyxl.load_workbook(BASE_DIR.__str__() + "\\INFORMES.xlsx")['INFORMES']
+        dataframe.active = True
+        with transaction.atomic():
+                for row in dataframe.iter_rows(2, dataframe.max_row):
                     informe = Informe()
-                    ano = row[9].strip()
+                    ano = str(row[9].value).strip()
                     ano = ano if ano != '' else None
 
-                    informe.no_registro = row[0].strip()
-                    informe.programa = Empresa.objects.get_or_create(nombre=row[1].strip())
-                    informe.codigo_proyecto = row[2].strip()
+                    informe.no_registro = str(row[0].value).strip()
+                    informe.programa = Empresa.objects.get_or_create(nombre=str(row[1].value).strip())[0]
+                    informe.codigo_proyecto = str(row[2].value).strip()
                     informe.ano_publicacion = ano
-                    informe.titulo = row[7].strip()
-                    informe.autores = row[4].strip()
-                    informe.solicitud_servicio = row[5].strip() if row[5].strip() != '' else None 
+                    informe.titulo = str(row[7].value).strip()
+                    informe.autores = str(row[4].value).strip()
+                    informe.solicitud_servicio = str(row[5].value).strip() if str(row[5].value).strip() != '' else None 
 
                     informe.save()
 
                     descriptores = []                    
-                    for x in row[3].split(','):
+                    for x in row[3].value.split(','):
                         x = x.strip().upper()
                         descriptor = Descriptor.objects.get_or_create(nombre=x)[0]
                         descriptores.append(descriptor)

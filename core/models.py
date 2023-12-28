@@ -39,5 +39,5 @@ class Libro(Publicacion):
 class Informe(Publicacion):
     no_registro = models.CharField(max_length=50, unique=True)
     programa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
-    codigo_proyecto = models.CharField(max_length=50)
+    codigo_proyecto = models.CharField(max_length=50, null=True, blank=True)
     solicitud_servicio = models.CharField(max_length=20, null=True, blank=True)
