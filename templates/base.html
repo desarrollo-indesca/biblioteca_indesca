@@ -9,18 +9,18 @@
     <link rel="icon" type="image/x-icon" href="{% static 'img/logo.ico' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/chart.umd.min.js' %}"></script>
+    <script src="{% static 'js/htmx.min.js' %}"></script>
 
     {% progressive_web_app_meta %}
 
     {% block head %}
     {% endblock %}
 </head>
-<body class="d-flex flex-column d-flex flex-column" style="max-height: 100vh !important;">
+<body class="d-flex flex-column d-flex flex-column">
 
     {% include 'navbar.html' %}
 
-    <div class="container" style="height: 90vh;">
+    <div class="container-fluid">
         {% block contenido %}
         {% endblock %}
     </div>
@@ -32,11 +32,7 @@
     {% endblock %}
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script>
-        $('.alert').delay(2000, async () => {
-            await new Promise(resolve => setTimeout(resolve, 4500));
-            $('.alert-hr').remove();
-            $('.alert').remove();            
-        });
+        
     </script>
 </body>
 </html>

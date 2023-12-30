@@ -16,7 +16,7 @@ class Empresa(models.Model):
 
 class Publicacion(models.Model):
     titulo = models.CharField(max_length=200)
-    resumen = models.CharField('', max_length=200, null  = True, blank = True)
+    resumen = models.TextField('', null  = True, blank = True)
     autores = models.CharField('Autores de la publicación separados por ;', max_length=200, null  = True, blank = True)
     ano_publicacion = models.SmallIntegerField('Año de publicacion', null  = True, blank = True)
     direccion = models.CharField('Dirección en el servidor correspondiente', max_length=200, null  = True, blank = True)

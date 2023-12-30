@@ -1,0 +1,41 @@
+    {% for libro in libros %}
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5>{{libro.titulo}}</h5>
+          <div class="row">
+            <div class="col-6">
+              <ul>
+                <li><b>Autores:</b> {{libro.autores}}</li>
+                <li><b>Año:</b> {{libro.ano_publicacion}}</li>
+                <li><b>Código:</b> {{libro.codigo}}</li>
+              </ul>
+            </div>
+            <div class="col-6">
+              <ul>
+                <li><b>C. de Inf.:</b> {{libro.cdinf}}</li>
+                <li><b>C. de LC:</b> {{libro.cdlc}}</li>
+                <li><b>C. de Cuter:</b> {{libro.cdcuter}}</li>
+                <li><b>C. de Dewey:</b> {{libro.cddew}}</li>
+              </ul>
+            </div>
+            {% if libro.resumen %}
+            <div class="col-12">
+              <hr>
+              <p><b>RESUMEN:</b> {{libro.resumen}}</p>              
+            </div>
+            {% endif %}
+          </div>
+          
+          {% if libro.direccion %}
+          <hr>
+          <div class="d-flex justify-content-center">
+            <div>
+                <a href="{{libro.direccion_servidor}}" class="btn btn-danger">Lectura Digital</a>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}  
