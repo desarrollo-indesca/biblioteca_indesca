@@ -2,14 +2,12 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          <h5 title="
-          {% for descriptor in libro.descriptores.all %}{{descriptor}}{% if not forloop.last %}, {% endif %}{% endfor %}
-          ">{{libro.titulo}}</h5>
+          <h5>{{libro.titulo}}</h5>
           <div class="row">
             <div class="col-md-8 col-sm-12">
               <ul>
                 <li><b>Autores:</b> {{libro.autores}}</li>
-                <li><b>Año:</b> {{libro.ano_publicacion}}</li>
+                <li><b>Año:</b> {% if libro.ano_publicacion %}{{libro.ano_publicacion}}{%else%}N/A{%endif%}</li>
                 <li><b>Código:</b> {{libro.codigo}}</li>
               </ul>
             </div>
@@ -17,8 +15,8 @@
               <ul>
                 <li><b>C. de Inf.:</b> {{libro.cdinf}}</li>
                 <li><b>C. de LC:</b> {{libro.cdlc}}</li>
-                <li><b>C. de Cuter:</b> {{libro.cdcuter}}</li>
-                <li><b>C. de Dewey:</b> {{libro.cddew}}</li>
+                <li><b>C. de Cuter:</b> {% if libro.cdcuter %}{{libro.cdcuter}}{%else%}No tiene{% endif %}</li>
+                <li><b>C. de Dewey:</b> {% if libro.cddewey %}{{libro.cddewey}}{%else%}No tiene{% endif %}</li>
               </ul>
             </div>
             {% if libro.resumen %}
@@ -29,14 +27,29 @@
             {% endif %}
           </div>
 
-          {% if libro.direccion %}
-          <hr>
           <div class="d-flex justify-content-center">
+            {% if request.user.is_superuser %}
+            <div>
+              <a href="{{libro.direccion_servidor}}" class="btn btn-secondary">Editar</a>
+            </div>
+            {% endif %}            
             <div>
                 <a href="{{libro.direccion_servidor}}" class="btn btn-danger">Lectura Digital</a>
             </div>
+            {% if request.user.is_superuser %}
+            <div>
+              <a href="{{libro.direccion_servidor}}" class="btn btn-warning">Eliminar</a>
+            </div>
+            {% endif %}
           </div>
+          
+          {% if libro.resumen %}
+          <hr>
+          <small><b>RESUMEN:</b> {{libro.resumen}}</small>
           {% endif %}
+
+          <hr>
+          <small><b>DESCRIPTORES:</b> {% for descriptor in libro.descriptores.all %}{{descriptor}}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
         </div>
       </div>
     </div>
@@ -45,7 +58,7 @@
       <p class="text-center" 
       hx-get="?page={{page_obj.next_page_number}}&autor={{request.GET.autor}}&titulo={{request.GET.titulo}}&ano={{request.GET.ano}}&descriptores={{request.GET.descriptores}}"
       hx-trigger="intersect once"
-      hx-swap="outerHTML">Cargando...</p>
+      hx-swap="outerHTML" hx-indicator="#spinner">Cargando...</p>
     {% endif %}
 
     {% empty %}
