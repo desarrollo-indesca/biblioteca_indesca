@@ -1,7 +1,8 @@
 from typing import Any
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView, UpdateView
+from django.http import HttpResponse
+from django.urls import reverse
 from .models import Libro
 from .forms import LibroForm
 
@@ -62,8 +63,11 @@ class BusquedaLibros(ListView):
 
         if(self.request.htmx and len(self.request.GET.keys())):
             libros = self.filtro_libros()
+
+            if(not libros and len(self.request.GET.keys())):
+                libros = Libro.objects.none()
         
-        if((not self.request.htmx or self.request.GET.get('page',None)) and not libros ):
+        if((not self.request.htmx or all(y == '' for y in self.request.GET.values() )) and not libros):
             libros = Libro.objects.all()
 
         if(libros):
@@ -88,8 +92,10 @@ class EdicionLibro(UpdateView):
         context['form'].fields['descriptores'].initial = "; ".join(context['object'].descriptores.all().order_by('nombre').values_list('nombre', flat=True))
 
         return context
+    
+def eliminar_libro(request, pk):
+    if(request.method == 'POST'):
+        libro = Libro.objects.get(id=pk)
+        libro.delete()
 
-def obtener_libro(request, pk):
-    libro = Libro.objects.get(pk=pk)
-
-    pass
+    return HttpResponse("")

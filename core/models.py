@@ -21,7 +21,7 @@ class Publicacion(models.Model):
     resumen = models.TextField('', null  = True, blank = True)
     autores = models.CharField('Autores de la publicación separados por ;', max_length=200, null  = True, blank = True)
     ano_publicacion = models.SmallIntegerField('Año de publicacion', null  = True, blank = True)
-    archivo = models.FileField('Archivo', upload_to='media/libros/', max_length=200, null  = True, blank = True)
+    archivo = models.FileField('Archivo', upload_to='libros/', max_length=200, null  = True, blank = True)
     descriptores = models.ManyToManyField(Descriptor, blank=True)
 
     def __str__(self):

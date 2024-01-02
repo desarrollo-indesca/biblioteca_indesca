@@ -24,19 +24,19 @@
           <div class="d-flex justify-content-center">
             {% if request.user.is_superuser %}
             <div>
-              <a href="{{libro.direccion_servidor}}" class="btn btn-secondary">Editar</a>
+              <a href="{% url 'edicion_libro' pk=libro.pk %}" class="btn btn-secondary">Editar</a>
             </div>
             {% endif %}
             
             {% if libro.archivo %}
             <div>
-                <a href="/{{libro.archivo}}" target="_blank" class="btn btn-danger">Lectura Digital</a>
+                <a href="/media/{{libro.archivo}}" target="_blank" class="btn btn-danger">Lectura Digital</a>
             </div>
             {%endif%}
 
             {% if request.user.is_superuser %}
             <div>
-              <a href="{{libro.direccion_servidor}}" class="btn btn-warning">Eliminar</a>
+              <button hx-post="{% url 'eliminacion_libro' pk=libro.pk %}" hx-swap="delete" hx-target="closest .card" hx-confirm="Esta acción es irreversible. ¿Está seguro que desea eliminar este libro?" class="btn btn-warning">Eliminar</button>
             </div>
             {% endif %}
           </div>
