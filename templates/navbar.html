@@ -15,7 +15,7 @@
           </li>
           {% if request.user.is_authenticated %}
           <li class="nav-item text-white">
-            <a class="nav-link" href="#">Informes Técnicos</a>
+            <a class="nav-link" href="{% url 'busqueda_informes' %}">Informes Técnicos</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

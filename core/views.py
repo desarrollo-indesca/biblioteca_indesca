@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView, UpdateView
 from django.http import HttpResponse
 from django.urls import reverse
-from .models import Libro
+from .models import Libro, Informe
 from .forms import LibroForm
 
 # Create your views here.
@@ -18,7 +18,7 @@ class BusquedaLibros(ListView):
         
         return 'busqueda_libros.html'
     
-    def filtro_libros(self):
+    def filtro_libros(self, modelo = Libro):
         autor = self.request.GET.get('autor', None)
         titulo = self.request.GET.get('titulo', None)
         descriptores = self.request.GET.get('descriptores', None)
@@ -27,11 +27,11 @@ class BusquedaLibros(ListView):
         libros, prev_libros = None, None
 
         if(autor):
-            libros = Libro.objects.filter(autores__icontains=autor)
+            libros = modelo.objects.filter(autores__icontains=autor)
             prev_libros = libros
 
         if(titulo):
-            libros = Libro.objects.filter(titulo__icontains=titulo) if not libros else libros.filter(titulo__icontains=titulo)
+            libros = modelo.objects.filter(titulo__icontains=titulo) if not libros else libros.filter(titulo__icontains=titulo)
         
         if(libros):
             prev_libros = libros
@@ -39,7 +39,7 @@ class BusquedaLibros(ListView):
             libros = prev_libros
 
         if(ano):
-            libros = Libro.objects.filter(ano_publicacion__icontains=ano) if not libros else libros.filter(ano_publicacion__icontains=ano)
+            libros = modelo.objects.filter(ano_publicacion__icontains=ano) if not libros else libros.filter(ano_publicacion__icontains=ano)
 
         if(libros):
             prev_libros = libros
@@ -49,7 +49,7 @@ class BusquedaLibros(ListView):
         if(descriptores):
             for descriptor in descriptores.split(';'):
                 descriptor = descriptor.strip()
-                libros = Libro.objects.filter(descriptores__nombre__icontains=descriptor) if not libros else libros.filter(descriptores__nombre__icontains=descriptor)
+                libros = modelo.objects.filter(descriptores__nombre__icontains=descriptor) if not libros else libros.filter(descriptores__nombre__icontains=descriptor)
 
         if(not libros):
             libros = prev_libros
@@ -99,3 +99,51 @@ def eliminar_libro(request, pk):
         libro.delete()
 
     return HttpResponse("")
+
+class BusquedaInformes(BusquedaLibros):
+    context_object_name = 'informes'
+    paginate_by = 20
+
+    def get_template_names(self) -> list:
+        if(self.request.htmx):
+            return 'partials/lista_informes.html'
+        
+        return 'busqueda_informes.html'
+    
+    def filtro_libros(self, modelo = Informe):
+        informes = super().filtro_libros(modelo)
+
+        solicitud_servicio = self.request.GET.get('solicitud_servicio', None)
+        programa = self.request.GET.get('programa', None)
+
+        prev_informes = informes
+        if(solicitud_servicio):
+            informes = modelo.objects.filter(solicitud_servicio__icontains=solicitud_servicio) if not informes else informes.filter(solicitud_servicio__icontains=solicitud_servicio)
+
+        if(not informes):
+            informes = prev_informes
+
+        if(programa):
+            informes = modelo.objects.filter(programa__nombre__icontains=programa) if not informes else informes.filter(programa__nombre__icontains=programa)
+
+        if(not informes):
+            informes = prev_informes
+
+        return informes
+    
+    def get_queryset(self):
+        informes = None
+
+        if(self.request.htmx and len(self.request.GET.keys())):
+            informes = self.filtro_libros()
+
+            if(not informes and len(self.request.GET.keys())):
+                informes = Informe.objects.none()
+        
+        if((not self.request.htmx or all(y == '' for y in self.request.GET.values() )) and not informes):
+            informes = Informe.objects.all()
+
+        if(informes):
+            informes.prefetch_related('descriptores')
+
+        return informes
