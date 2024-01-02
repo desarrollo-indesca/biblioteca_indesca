@@ -21,7 +21,7 @@ class Publicacion(models.Model):
     resumen = models.TextField('', null  = True, blank = True)
     autores = models.CharField('Autores de la publicación separados por ;', max_length=200, null  = True, blank = True)
     ano_publicacion = models.SmallIntegerField('Año de publicacion', null  = True, blank = True)
-    direccion = models.CharField('Dirección en el servidor correspondiente', max_length=200, null  = True, blank = True)
+    archivo = models.FileField('Archivo', upload_to='media/libros/', max_length=200, null  = True, blank = True)
     descriptores = models.ManyToManyField(Descriptor, blank=True)
 
     def __str__(self):
@@ -37,12 +37,6 @@ class Libro(Publicacion):
     cdlc = models.CharField("Clasificación de LC", max_length=50)
     cdcuter = models.CharField("Código de Cuter", max_length=50, null=True, blank=True)
     cddewey = models.CharField("Código de Dewey", max_length=50, null=True, blank=True)
-
-    def direccion_servidor(self):
-        if(self.direccion):
-            return DIRECCION_SERVIDOR_LIBROS + self.direccion
-        
-        return None
 
 class Informe(Publicacion):
     no_registro = models.CharField(max_length=50, unique=True)

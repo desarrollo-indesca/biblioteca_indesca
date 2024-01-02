@@ -4,10 +4,10 @@
 
 {% block contenido %}
 <div style="min-height: 90vh;" class="container">
-    <h2 class="text-center">Registro de Nuevo Libro</h2>
+    <h2 class="text-center">{{titulo}}</h2>
     <hr>
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
     
         <div class="row">
@@ -37,8 +37,7 @@
             <div class="form-group col-md-6 col-sm-12">
                 <label for="descriptores">Dirección en el servidor:</label>
                 <div class="input-group">
-                    <span class="input-group-text" id="basic-addon1">\\172.20.30.114\</span>
-                    {% render_field form.direccion class="form-control" %}
+                    {% render_field form.archivo class="form-control" %}
                 </div>
             </div>
             <div class="form-group col-md-6 col-sm-12">

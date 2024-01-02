@@ -1,12 +1,9 @@
+from typing import Any
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 from .models import Libro
 from .forms import LibroForm
-import requests
-
-import os
-import paramiko
 
 # Create your views here.
 
@@ -78,6 +75,19 @@ class CreacionLibro(CreateView):
     template_name = 'libro_form.html'
     form_class = LibroForm
     success_url = '/'
+
+class EdicionLibro(UpdateView):
+    template_name = 'libro_form.html'
+    form_class = LibroForm
+    success_url = '/'
+    model = Libro
+
+    def get_context_data(self, **kwargs: Any) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Edición de Libro'
+        context['form'].fields['descriptores'].initial = "; ".join(context['object'].descriptores.all().order_by('nombre').values_list('nombre', flat=True))
+
+        return context
 
 def obtener_libro(request, pk):
     libro = Libro.objects.get(pk=pk)

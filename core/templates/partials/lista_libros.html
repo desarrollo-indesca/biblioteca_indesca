@@ -28,9 +28,9 @@
             </div>
             {% endif %}
             
-            {% if libro.direccion_servidor %}
+            {% if libro.archivo %}
             <div>
-                <a href="{% url 'obtener_libro' pk=libro.pk %}" target="_blank" class="btn btn-danger">Lectura Digital</a>
+                <a href="/{{libro.archivo}}" target="_blank" class="btn btn-danger">Lectura Digital</a>
             </div>
             {%endif%}
 
