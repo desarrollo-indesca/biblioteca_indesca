@@ -1,7 +1,7 @@
 {% load static %}
 {% load pwa %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +15,17 @@
 
     {% block head %}
     {% endblock %}
+
+    <style>
+        .indicator-style {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            z-index: 1000;
+            margin-left: -50px;
+            margin-top: -50px;
+        }
+    </style>
 </head>
 <body class="d-flex flex-column d-flex flex-column">
 
@@ -28,11 +39,27 @@
     {% include 'footer.html' %}
     
     
-    {% block extra_javascript %}
-    {% endblock %}
+    <div id="spinner" class="htmx-indicator indicator-style">
+        <div class="spinner-grow text-danger" style="width: 6rem; height: 6rem;">
+        </div>
+    </div>
+
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script>
-        
+        document.body.addEventListener('htmx:beforeRequest', function(evt) {
+            const body = document.getElementsByTagName('body')[0]
+            body.style.opacity = 0.25
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function(evt) {
+            const body = document.getElementsByTagName('body')[0]
+            body.style.opacity = 1.0
+        });
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
     </script>
 </body>
 </html>

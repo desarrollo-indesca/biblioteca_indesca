@@ -2,6 +2,8 @@ from django.db import models
 
 # Create your models here.
 
+DIRECCION_SERVIDOR_LIBROS = 'file://172.20.30.114/'
+
 class Descriptor(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
 
@@ -19,7 +21,7 @@ class Publicacion(models.Model):
     resumen = models.TextField('', null  = True, blank = True)
     autores = models.CharField('Autores de la publicación separados por ;', max_length=200, null  = True, blank = True)
     ano_publicacion = models.SmallIntegerField('Año de publicacion', null  = True, blank = True)
-    direccion = models.CharField('Dirección en el servidor correspondiente', max_length=200, null  = True, blank = True)
+    archivo = models.FileField('Archivo', upload_to='libros/', max_length=200, null  = True, blank = True)
     descriptores = models.ManyToManyField(Descriptor, blank=True)
 
     def __str__(self):

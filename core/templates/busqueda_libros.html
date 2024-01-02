@@ -5,34 +5,22 @@
     <div class="col-md-4 col-sm-12 d-flex justify-content-center align-items-center border-end" style="height: 90vh;">
         <div class="w-100 p-5">
             <h5 class="text-center">Formulario de Filtrado</h5>
-            <form class="d-flex flex-column">
-                <label for="autor">Autor</label>
-                <input id="autor" type="text" class="form-control" 
-                hx-get="{% url 'filtrar_libros' %}" 
-                hx-trigger="keyup delay:1s" 
-                hx-vals='js:{"autor": document.getElementById("autor").value, "titulo": document.getElementById("titulo").value, "ano": document.getElementById("ano").value, "descriptores": document.getElementById("descriptores").value}' 
-                hx-target="#resultados_libros"> <br>
-                
+            <form class="d-flex flex-column" hx-get="{% url 'busqueda_libros' %}" hx-trigger="submit, keyup delay:1s" hx-target="#resultados_libros" hx-indicator="#spinner">               
                 <label for="titulo">Título</label>
-                <input id="titulo" type="text" class="form-control"
-                hx-get="{% url 'filtrar_libros' %}" 
-                hx-trigger="keyup delay:1s" 
-                hx-vals='js:{"autor": document.getElementById("autor").value, "titulo": document.getElementById("titulo").value, "ano": document.getElementById("ano").value, "descriptores": document.getElementById("descriptores").value}' 
-                hx-target="#resultados_libros"> <br>
+                <input id="titulo" type="text" class="form-control" name="titulo"> <br>
+                
+                <label for="autor">Autor</label>
+                <input id="autor" type="text" class="form-control"  name="autor"> <br>
 
                 <label for="ano">Año</label>
-                <input id="ano" type="text" class="form-control"
-                hx-get="{% url 'filtrar_libros' %}" 
-                hx-trigger="keyup delay:1s" 
-                hx-vals='js:{"autor": document.getElementById("autor").value, "titulo": document.getElementById("titulo").value, "ano": document.getElementById("ano").value, "descriptores": document.getElementById("descriptores").value}' 
-                hx-target="#resultados_libros"> <br>
+                <input id="ano" type="text" class="form-control" name="ano"> <br>
 
                 <label for="">Descriptores</label>
-                <input id="descriptores"  type="text" class="form-control"
-                hx-get="{% url 'filtrar_libros' %}" 
-                hx-trigger="keyup delay:1s" 
-                hx-vals='js:{"autor": document.getElementById("autor").value, "titulo": document.getElementById("titulo").value, "ano": document.getElementById("ano").value, "descriptores": document.getElementById("descriptores").value}' 
-                hx-target="#resultados_libros"> <br>
+                <input id="descriptores"  type="text" class="form-control" name="descriptores" placeholder="Separe con ';'"> <br>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-danger">Buscar</button>
+                </div>
             </form>
         </div>    
     </div>
