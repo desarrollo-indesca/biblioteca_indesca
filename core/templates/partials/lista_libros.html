@@ -19,12 +19,6 @@
                 <li><b>C. de Dewey:</b> {% if libro.cddewey %}{{libro.cddewey}}{%else%}No tiene{% endif %}</li>
               </ul>
             </div>
-            {% if libro.resumen %}
-            <div class="col-12">
-              <hr>
-              <p><b>RESUMEN:</b> {{libro.resumen}}</p>              
-            </div>
-            {% endif %}
           </div>
 
           <div class="d-flex justify-content-center">
@@ -32,10 +26,14 @@
             <div>
               <a href="{{libro.direccion_servidor}}" class="btn btn-secondary">Editar</a>
             </div>
-            {% endif %}            
+            {% endif %}
+            
+            {% if libro.direccion_servidor %}
             <div>
-                <a href="{{libro.direccion_servidor}}" class="btn btn-danger">Lectura Digital</a>
+                <a href="{% url 'obtener_libro' pk=libro.pk %}" target="_blank" class="btn btn-danger">Lectura Digital</a>
             </div>
+            {%endif%}
+
             {% if request.user.is_superuser %}
             <div>
               <a href="{{libro.direccion_servidor}}" class="btn btn-warning">Eliminar</a>

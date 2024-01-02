@@ -2,6 +2,8 @@ from django.db import models
 
 # Create your models here.
 
+DIRECCION_SERVIDOR_LIBROS = 'file://172.20.30.114/'
+
 class Descriptor(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
 
@@ -35,6 +37,12 @@ class Libro(Publicacion):
     cdlc = models.CharField("Clasificación de LC", max_length=50)
     cdcuter = models.CharField("Código de Cuter", max_length=50, null=True, blank=True)
     cddewey = models.CharField("Código de Dewey", max_length=50, null=True, blank=True)
+
+    def direccion_servidor(self):
+        if(self.direccion):
+            return DIRECCION_SERVIDOR_LIBROS + self.direccion
+        
+        return None
 
 class Informe(Publicacion):
     no_registro = models.CharField(max_length=50, unique=True)

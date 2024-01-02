@@ -1,7 +1,12 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.http import HttpResponseRedirect
+from django.views.generic import ListView, CreateView
 from .models import Libro
-import time
+from .forms import LibroForm
+import requests
+
+import os
+import paramiko
 
 # Create your views here.
 
@@ -9,7 +14,7 @@ class BusquedaLibros(ListView):
     context_object_name = 'libros'
     paginate_by = 20
 
-    def get_template_names(self) -> list[str]:
+    def get_template_names(self) -> list:
         if(self.request.htmx):
             return 'partials/lista_libros.html'
         
@@ -56,7 +61,6 @@ class BusquedaLibros(ListView):
         return libros
     
     def get_queryset(self):
-        time.sleep(1)
         libros = None
 
         if(self.request.htmx and len(self.request.GET.keys())):
@@ -69,3 +73,13 @@ class BusquedaLibros(ListView):
             libros.prefetch_related('descriptores')
 
         return libros
+
+class CreacionLibro(CreateView):
+    template_name = 'libro_form.html'
+    form_class = LibroForm
+    success_url = '/'
+
+def obtener_libro(request, pk):
+    libro = Libro.objects.get(pk=pk)
+
+    pass

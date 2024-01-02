@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'biblioteca_digital',
     'django_htmx',
+    'widget_tweaks',
     'core',
     'pwa',
 ]
