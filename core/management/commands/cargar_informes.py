@@ -31,19 +31,19 @@ class Command(BaseCommand):
                     continue
 
                 programa = str(row[1].value).strip().upper()
-                if not programa or programa == '':
+                if not programa or programa == '' or programa == 'NONE':
                     continue
                 
                 descriptor = str(row[8].value).strip().upper()
-                solicitud_servicio = str(row[5].value).strip()
+                solicitud_servicio = str(row[5].value).strip().upper().replace("_X000D_", "").strip() if row[5].value else None
                 informe.no_registro = no_registro.strip()
                 informe.programa = Empresa.objects.get_or_create(nombre=programa)[0]
                 informe.codigo_proyecto = str(row[2].value).strip()
                 informe.ano_publicacion = ano
                 informe.titulo = str(row[7].value).strip().upper().replace("\"", "").replace("_X000D_", "").strip()
-                informe.autores = autores.strip().upper()
-                informe.solicitud_servicio = solicitud_servicio if solicitud_servicio != '' else None
-                informe.archivo = "/".join(row[-2].value.split('/')[-3:]) if len(row[-2].value) else None
+                informe.autores = autores.strip().upper().replace("_X0DDD_", "")
+                informe.solicitud_servicio = solicitud_servicio if solicitud_servicio != '' and solicitud_servicio != 'None' else None
+                informe.archivo = "/".join(row[-2].value.split('/')[-3:]) if row[-2].value and len(row[-2].value) else None
                 informe.save()
 
                 descriptores = []                    

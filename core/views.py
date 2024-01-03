@@ -3,8 +3,13 @@ from django.views.generic import ListView, CreateView, UpdateView
 from django.http import HttpResponse
 from .models import Libro, Informe
 from .forms import LibroForm, InformeForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 # Create your views here.
+class SuperUserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 class BusquedaLibros(ListView):
     context_object_name = 'libros'
@@ -65,7 +70,7 @@ class BusquedaLibros(ListView):
             if(not libros and len(self.request.GET.keys())):
                 libros = Libro.objects.none()
         
-        if((not self.request.htmx or all(y == '' for y in self.request.GET.values() )) and not libros):
+        if((not self.request.htmx or all(y == '' for x,y in self.request.GET.items() if x != 'page' )) and not libros):
             libros = Libro.objects.all()
 
         if(libros):
@@ -73,12 +78,12 @@ class BusquedaLibros(ListView):
 
         return libros
 
-class CreacionLibro(CreateView):
+class CreacionLibro(SuperUserRequiredMixin, CreateView):
     template_name = 'libro_form.html'
     form_class = LibroForm
     success_url = '/'
 
-class EdicionLibro(UpdateView):
+class EdicionLibro(SuperUserRequiredMixin, UpdateView):
     template_name = 'libro_form.html'
     form_class = LibroForm
     success_url = '/'
@@ -92,13 +97,15 @@ class EdicionLibro(UpdateView):
         return context
     
 def eliminar_libro(request, pk):
-    if(request.method == 'POST'):
+    if(request.method == 'POST' and request.user.is_superuser):
         libro = Libro.objects.get(id=pk)
         libro.delete()
 
-    return HttpResponse("")
+        return HttpResponse(status=200)
+    
+    return HttpResponse(status=402)
 
-class BusquedaInformes(BusquedaLibros):
+class BusquedaInformes(LoginRequiredMixin, BusquedaLibros):
     context_object_name = 'informes'
     paginate_by = 20
 
@@ -138,7 +145,7 @@ class BusquedaInformes(BusquedaLibros):
             if(not informes and len(self.request.GET.keys())):
                 informes = Informe.objects.none()
         
-        if((not self.request.htmx or all(y == '' for y in self.request.GET.values() )) and not informes):
+        if((not self.request.htmx or all(y == '' for x,y in self.request.GET.items() if x != 'page')) and not informes):
             informes = Informe.objects.all()
 
         if(informes):
@@ -146,12 +153,12 @@ class BusquedaInformes(BusquedaLibros):
 
         return informes
 
-class CreacionInforme(CreateView):
+class CreacionInforme(SuperUserRequiredMixin, CreateView):
     template_name = 'informe_form.html'
     form_class = InformeForm
     success_url = 'publicaciones/busqueda/informes/'
 
-class EdicionInforme(UpdateView):
+class EdicionInforme(SuperUserRequiredMixin, UpdateView):
     template_name = 'informe_form.html'
     form_class = InformeForm
     success_url = '/'
@@ -165,8 +172,9 @@ class EdicionInforme(UpdateView):
         return context
     
 def eliminar_informe(request, pk):
-    if(request.method == 'POST'):
+    if(request.method == 'POST' and request.user.is_superuser):
         informe = Informe.objects.get(id=pk)
         informe.delete()
-
-    return HttpResponse("")
+        return HttpResponse(status=200)
+    
+    return HttpResponse(status=402)
