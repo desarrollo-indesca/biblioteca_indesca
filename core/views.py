@@ -3,14 +3,10 @@ from django.views.generic import ListView, CreateView, UpdateView
 from django.http import HttpResponse
 from .models import Libro, Informe
 from .forms import LibroForm, InformeForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from usuarios.views import SuperUserRequiredMixin
 
 # Create your views here.
-class SuperUserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
-
-    def test_func(self):
-        return self.request.user.is_superuser
-
 class BusquedaLibros(ListView):
     context_object_name = 'libros'
     paginate_by = 20

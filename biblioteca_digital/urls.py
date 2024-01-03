@@ -25,4 +25,5 @@ urlpatterns = [
     path('', bienvenida, name='bienvenida'),
     path('cerrar_sesion', cerrar_sesion, name='cerrar_sesion'),
     path('publicaciones/',include('core.urls')),
+    path('usuarios/',include('usuarios.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

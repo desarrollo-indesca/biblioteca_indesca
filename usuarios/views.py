@@ -49,13 +49,19 @@ class ConsultaUsuarios(SuperUserRequiredMixin, ListView):
     template_name = 'usuarios/consulta.html'
     paginate_by = 10
 
+    def get_template_names(self) -> list:
+        if(self.request.htmx):
+            return 'usuarios/tabla.html'
+
+        return super().get_template_names()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["titulo"] = "SIEVEP - Consulta de Usuarios"
+        context["titulo"] = "Consulta de Usuarios"
 
         context['nombre'] = self.request.GET.get('nombre', '')
-        context['correo'] = self.request.GET.get('correo', '')
-        context['superusuario'] = self.request.GET.get('superusuario')
+        context['username'] = self.request.GET.get('username', '')
+        context['correo'] = self.request.GET.get('correo')
         context['activo'] = self.request.GET.get('activo','')
 
         return context
@@ -79,12 +85,12 @@ class ConsultaUsuarios(SuperUserRequiredMixin, ListView):
 
         if(superusuario != ''):
             new_context = new_context.filter(
-                is_superuser = int(superusuario)
+                is_superuser = bool(int(superusuario))
             )
 
         if(activo != ''):
             new_context = new_context.filter(
-                is_active = activo
+                is_active = bool(int(activo))
             )
 
         return new_context.order_by('first_name','last_name')
@@ -128,6 +134,9 @@ class CrearNuevoUsuario(SuperUserRequiredMixin, View):
         if(self.modelo.objects.filter(first_name = data['nombre'].title()).exists()):
             errores.append("Ya existe un usuario con ese nombre registrado. Añada una característica diferenciadora.")
 
+        if(self.modelo.objects.filter(username = data['usuario'].lower()).exists()):
+            errores.append("Ya existe un usuario con ese usuario registrado.")
+
         if(len(data['password']) < 8):
             errores.append("La contraseña debe tener 8 caracteres.")
 
@@ -138,10 +147,10 @@ class CrearNuevoUsuario(SuperUserRequiredMixin, View):
         if(len(errores) == 0):
             with transaction.atomic():
                 self.modelo.objects.create(
-                    email = request.POST['correo'].lower(),
-                    username = request.POST['correo'].lower(),
-                    first_name = request.POST['nombre'].title(),
-                    password = make_password(request.POST['password']),
+                    email = request.POST['correo'].lower().strip(),
+                    username = request.POST['usuario'].lower().strip(),
+                    first_name = request.POST['nombre'].title().strip(),
+                    password = make_password(request.POST['password'].strip()),
                     is_superuser = 'superusuario' in request.POST.keys()
                 )
 
@@ -201,9 +210,9 @@ class EditarUsuario(SuperUserRequiredMixin, View):
         if(len(errores) == 0):
             with transaction.atomic():
                 usuario = self.modelo.objects.get(pk=pk)
-                usuario.email = request.POST['correo'].lower()
-                usuario.username = request.POST['correo'].lower()
-                usuario.first_name =  request.POST['nombre'].title()
+                usuario.email = request.POST['correo'].lower().strip()
+                usuario.username = request.POST['usuario'].lower().strip()
+                usuario.first_name =  request.POST['nombre'].title().strip()
                 usuario.is_active = 'activo' in request.POST.keys()
                 usuario.is_superuser = 'superusuario' in request.POST.keys()
                 usuario.save()
@@ -218,11 +227,12 @@ class EditarUsuario(SuperUserRequiredMixin, View):
         usuario = self.modelo.objects.get(pk=pk)
         previo = {
             'nombre': usuario.first_name,
+            'usuario': usuario.get_username(),
             'correo': usuario.email,
             'superusuario': usuario.is_superuser,
             'activo': usuario.is_active
         }
-
+        
         return render(request, 'usuarios/creacion.html', context={'previo': previo, 'edicion': True, **self.context})
 
 class CambiarContrasena(SuperUserRequiredMixin, View):
