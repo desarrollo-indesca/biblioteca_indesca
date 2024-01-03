@@ -161,7 +161,7 @@ class CreacionInforme(SuperUserRequiredMixin, CreateView):
 class EdicionInforme(SuperUserRequiredMixin, UpdateView):
     template_name = 'informe_form.html'
     form_class = InformeForm
-    success_url = '/'
+    success_url = '/publicaciones/busqueda/informes/'
     model = Informe
 
     def get_context_data(self, **kwargs: Any) -> dict:

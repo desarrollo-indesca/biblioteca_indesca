@@ -41,7 +41,7 @@ class Command(BaseCommand):
                 informe.codigo_proyecto = str(row[2].value).strip()
                 informe.ano_publicacion = ano
                 informe.titulo = str(row[7].value).strip().upper().replace("\"", "").replace("_X000D_", "").strip()
-                informe.autores = autores.strip().upper().replace("_X0DDD_", "")
+                informe.autores = autores.strip().upper().replace("_X000D_", "")
                 informe.solicitud_servicio = solicitud_servicio if solicitud_servicio != '' and solicitud_servicio != 'None' else None
                 informe.archivo = "/".join(row[-2].value.split('/')[-3:]) if row[-2].value and len(row[-2].value) else None
                 informe.save()
@@ -49,6 +49,8 @@ class Command(BaseCommand):
                 descriptores = []                    
                 for x in descriptor.split(','):
                     x = x.strip().upper()
+                    if(x == '' or x == 'NONE'):
+                        continue
                     descriptor = Descriptor.objects.get_or_create(nombre=x)[0]
                     descriptores.append(descriptor)
                 

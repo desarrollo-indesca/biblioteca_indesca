@@ -22,6 +22,12 @@
                     <button type="submit" class="btn btn-danger">Buscar</button>
                 </div>
             </form>
+            {% if request.user.is_superuser %}
+            <hr>
+            <div class="d-flex justify-content-center">
+                <a href="{% url 'creacion_informe' %}" class="btn btn-success">+ Registrar Nuevo Informe</a>
+            </div>
+            {% endif %}
         </div>    
     </div>
     <div class="col-md-8 col-sm-12" style="height: 90vh;">

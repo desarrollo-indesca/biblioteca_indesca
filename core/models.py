@@ -42,6 +42,10 @@ class Libro(Publicacion):
     cddewey = models.CharField("Código de Dewey", max_length=50, null=True, blank=True)
 
 class Informe(Publicacion):
+    def upload_to(self, filename):
+        return f'informes/{self.programa}/{self.ano_publicacion}/{filename}'
+    
+    archivo = models.FileField('Archivo', upload_to=upload_to, max_length=200, null  = True, blank = True)
     no_registro = models.CharField(max_length=50, unique=True)
     programa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
     codigo_proyecto = models.CharField(max_length=50, null=True, blank=True)

@@ -10,8 +10,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
     
-        <div class="row">
-            {{form.errors}}
+        <div class="row g-2">
             <div class="col-12">
                 <h4 class="text-center mb-3">Datos Del Proyecto</h4>
             </div>
@@ -19,23 +18,28 @@
             <div class="form-group col-md-4 col-sm-12">
                 <label for="no_registro">No. Registro:</label>
                 {% render_field form.no_registro class="form-control" %}
+                {% if form.no_registro.errors %}<small> {% for error in form.no_registro.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
             <div class="form-group col-md-4 col-sm-12">
                 <label for="codigo_proyecto">Cód. Proyecto:</label>
                 {% render_field form.codigo_proyecto class="form-control" %}
+                {% if form.codigo_proyecto.errors %}<small> {% for error in form.codigo_proyecto.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
             <div class="form-group col-md-4 col-sm-12">
                 <label for="codigo_proyecto">Solic. de Servicio:</label>
                 {% render_field form.solicitud_servicio class="form-control" %}
+                {% if form.solicitud_servicio.errors %}<small> {% for error in form.solicitud_servicio.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
 
             <div class="form-group col-md-4 col-sm-12">
                 <label for="programa">Programa:</label>
                 {% render_field form.programa class="form-select" %}
+                {% if form.programa.errors %}<small> {% for error in form.programa.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
             <div class="form-group col-md-8 col-sm-12">
                 <label for="titulo">Título del Proyecto:</label>
                 {% render_field form.titulo class="form-control" %}
+                {% if form.titulo.errors %}<small> {% for error in form.titulo.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
 
             <div class="col-12">
@@ -46,16 +50,19 @@
             <div class="form-group col-md-6 col-sm-12">
                 <label for="autores">Autores:</label>
                 {% render_field form.autores class="form-control" %}
+                {% if form.autores.errors %}<small> {% for error in form.autores.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
             <div class="form-group col-md-6 col-sm-12">
                 <label for="ano_publicacion">Año de publicación:</label>
                 {% render_field form.ano_publicacion class="form-control" %}
+                {% if form.ano_registro.errors %}<small> {% for error in form.ano_registro.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
 
             <div class="form-group col-12">
                 <label for="descriptores">Documento:</label>
                 <div class="input-group">
                     <input type="file" name="archivo" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="form-control" id="id_archivo">
+                    {% if form.archivo.errors %}<small> {% for error in form.archivo.errors %}{{error}} {% endfor %}</small>{%endif%}
                 </div>
                 {% if object.archivo %}
                 <small><a href="/media/{{object.archivo}}" target="_blank">Ya hay un archivo cargado.</a></small>
@@ -64,14 +71,16 @@
             <div class="form-group col-12">
                 <label for="direccion">Descriptores (separe con ;):</label>
                 {% render_field form.descriptores class="form-control" %}
+                {% if form.descriptores.errors %}<small> {% for error in form.descriptores.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
 
             <div class="form-group col-12">
                 <label for="resumen">Resumen:</label>
                 {% render_field form.resumen class="form-control" %}
+                {% if form.resumen.errors %}<small> {% for error in form.resumen.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
 
-            <div class="col-12 d-flex justify-content-center mt-3">
+            <div class="col-12 d-flex justify-content-center mt-3 mb-3">
                 <button type="submit" class="btn btn-danger">Enviar Formulario</button>
             </div>
             
