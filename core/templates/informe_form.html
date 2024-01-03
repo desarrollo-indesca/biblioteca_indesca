@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+
+{% block contenido %}
+<div style="min-height: 90vh;" class="container">
+    <h2 class="text-center">{{titulo}}</h2>
+    <hr>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+    
+        <div class="row">
+            {{form.errors}}
+            <div class="col-12">
+                <h4 class="text-center mb-3">Datos Del Proyecto</h4>
+            </div>
+
+            <div class="form-group col-md-4 col-sm-12">
+                <label for="no_registro">No. Registro:</label>
+                {% render_field form.no_registro class="form-control" %}
+            </div>
+            <div class="form-group col-md-4 col-sm-12">
+                <label for="codigo_proyecto">Cód. Proyecto:</label>
+                {% render_field form.codigo_proyecto class="form-control" %}
+            </div>
+            <div class="form-group col-md-4 col-sm-12">
+                <label for="codigo_proyecto">Solic. de Servicio:</label>
+                {% render_field form.solicitud_servicio class="form-control" %}
+            </div>
+
+            <div class="form-group col-md-4 col-sm-12">
+                <label for="programa">Programa:</label>
+                {% render_field form.programa class="form-select" %}
+            </div>
+            <div class="form-group col-md-8 col-sm-12">
+                <label for="titulo">Título del Proyecto:</label>
+                {% render_field form.titulo class="form-control" %}
+            </div>
+
+            <div class="col-12">
+                <hr>
+                <h4 class="text-center">Datos de Publicación</h4>
+            </div>
+
+            <div class="form-group col-md-6 col-sm-12">
+                <label for="autores">Autores:</label>
+                {% render_field form.autores class="form-control" %}
+            </div>
+            <div class="form-group col-md-6 col-sm-12">
+                <label for="ano_publicacion">Año de publicación:</label>
+                {% render_field form.ano_publicacion class="form-control" %}
+            </div>
+
+            <div class="form-group col-12">
+                <label for="descriptores">Documento:</label>
+                <div class="input-group">
+                    <input type="file" name="archivo" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="form-control" id="id_archivo">
+                </div>
+                {% if object.archivo %}
+                <small><a href="/media/{{object.archivo}}" target="_blank">Ya hay un archivo cargado.</a></small>
+                {% endif %}
+            </div>
+            <div class="form-group col-12">
+                <label for="direccion">Descriptores (separe con ;):</label>
+                {% render_field form.descriptores class="form-control" %}
+            </div>
+
+            <div class="form-group col-12">
+                <label for="resumen">Resumen:</label>
+                {% render_field form.resumen class="form-control" %}
+            </div>
+
+            <div class="col-12 d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-danger">Enviar Formulario</button>
+            </div>
+            
+        </div>
+    </form>
+</div>
+{% endblock %}

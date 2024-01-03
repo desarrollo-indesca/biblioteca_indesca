@@ -5,7 +5,7 @@
     <div class="col-md-4 col-sm-12 d-flex justify-content-center align-items-center border-end" style="height: 90vh;">
         <div class="w-100 p-5">
             <h5 class="text-center">Formulario de Filtrado</h5>
-            <form class="d-flex flex-column" hx-get="{% url 'busqueda_informes' %}" hx-trigger="submit, keyup delay:1s" hx-target="#resultados_libros" hx-indicator="#spinner">               
+            <form class="d-flex flex-column" hx-get="{% url 'busqueda_informes' %}" hx-trigger="submit, keyup delay:1s" hx-target="#resultados_informes" hx-indicator="#spinner">               
                 <label for="titulo">Título</label>
                 <input id="titulo" type="text" class="form-control" name="titulo"> <br>
 

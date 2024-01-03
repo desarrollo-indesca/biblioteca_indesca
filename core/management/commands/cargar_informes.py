@@ -8,7 +8,6 @@ class Command(BaseCommand):
     help = "Carga los libros en la base de datos junto a los posibles descriptores"
 
     def handle(self, *args, **options):
-        print(BASE_DIR.__str__() + "\\INFORMES.xlsx")
         dataframe = openpyxl.load_workbook(BASE_DIR.__str__() + "\\INFORMES.xlsx")['INFORMES']
         dataframe.active = True
         with transaction.atomic():
@@ -41,9 +40,10 @@ class Command(BaseCommand):
                 informe.programa = Empresa.objects.get_or_create(nombre=programa)[0]
                 informe.codigo_proyecto = str(row[2].value).strip()
                 informe.ano_publicacion = ano
-                informe.titulo = str(row[7].value).strip().upper()
+                informe.titulo = str(row[7].value).strip().upper().replace("\"", "").replace("_X000D_", "").strip()
                 informe.autores = autores.strip().upper()
-                informe.solicitud_servicio = solicitud_servicio if solicitud_servicio != '' else None 
+                informe.solicitud_servicio = solicitud_servicio if solicitud_servicio != '' else None
+                informe.archivo = "/".join(row[-2].value.split('/')[-3:]) if len(row[-2].value) else None
                 informe.save()
 
                 descriptores = []                    

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Libro, Descriptor
+from .models import Libro, Descriptor, Informe
 
 class LibroForm(forms.ModelForm):
     descriptores = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Separe cada descriptor con el carácter ";"'}))
@@ -21,4 +21,11 @@ class LibroForm(forms.ModelForm):
 
     class Meta:
         model = Libro
+        exclude = ['fecha_creacion', 'fecha_actualizacion', 'id', 'descriptores']
+
+class InformeForm(forms.ModelForm):
+    descriptores = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Separe cada descriptor con el carácter ";"'}))
+
+    class Meta:
+        model = Informe
         exclude = ['fecha_creacion', 'fecha_actualizacion', 'id', 'descriptores']

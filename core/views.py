@@ -1,10 +1,8 @@
 from typing import Any
-from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView, UpdateView
 from django.http import HttpResponse
-from django.urls import reverse
 from .models import Libro, Informe
-from .forms import LibroForm
+from .forms import LibroForm, InformeForm
 
 # Create your views here.
 
@@ -147,3 +145,28 @@ class BusquedaInformes(BusquedaLibros):
             informes.prefetch_related('descriptores')
 
         return informes
+
+class CreacionInforme(CreateView):
+    template_name = 'informe_form.html'
+    form_class = InformeForm
+    success_url = 'publicaciones/busqueda/informes/'
+
+class EdicionInforme(UpdateView):
+    template_name = 'informe_form.html'
+    form_class = InformeForm
+    success_url = '/'
+    model = Informe
+
+    def get_context_data(self, **kwargs: Any) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Edición de Informe'
+        context['form'].fields['descriptores'].initial = "; ".join(context['object'].descriptores.all().order_by('nombre').values_list('nombre', flat=True))
+
+        return context
+    
+def eliminar_informe(request, pk):
+    if(request.method == 'POST'):
+        informe = Informe.objects.get(id=pk)
+        informe.delete()
+
+    return HttpResponse("")

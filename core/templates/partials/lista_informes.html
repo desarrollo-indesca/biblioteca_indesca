@@ -15,7 +15,7 @@
               <ul>
                 <li><b>Programa:</b> {{informe.programa}}</li>
                 <li><b>Código Proyecto:</b> {{informe.codigo_proyecto}}</li>
-                <li><b>Solicitud de Servicio:</b> {{informe.solicitud_servicio}}</li>
+                <li><b>Solicitud de Servicio:</b> {% if informe.solicitud_servicio %}{{informe.solicitud_servicio}}{% else %} {% endif %}</li>
               </ul>
             </div>
           </div>
@@ -23,7 +23,7 @@
           <div class="d-flex justify-content-center">
             {% if request.user.is_superuser %}
             <div>
-              <a href="{% url 'edicion_libro' pk=informe.pk %}" class="btn btn-secondary">Editar</a>
+              <a href="{% url 'edicion_informe' pk=informe.pk %}" class="btn btn-secondary">Editar</a>
             </div>
             {% endif %}
             

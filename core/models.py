@@ -15,6 +15,9 @@ class Empresa(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    class Meta:
+        ordering = ('nombre',)
 
 class Publicacion(models.Model):
     titulo = models.CharField(max_length=200)
