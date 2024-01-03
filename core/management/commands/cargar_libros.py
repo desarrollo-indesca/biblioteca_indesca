@@ -25,7 +25,7 @@ class Command(BaseCommand):
                     libro.cdlc = row[3].strip()
                     libro.cdcuter = cdcuter if cdcuter != "No Tiene" else None
                     libro.cddewey = row[5].strip()
-                    libro.titulo = row[6].strip()
+                    libro.titulo = row[6].strip().replace("¥","Ñ")
                     libro.autores = row[7].strip()
 
                     libro.save()
