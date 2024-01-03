@@ -28,7 +28,9 @@ SECRET_KEY = 'django-insecure-(m=4yu3gx#(&!u^8vi!n^nkmix2&7)uda(*9kic*k9(_s95tui
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+SESSION_COOKIE_AGE = 25 * 60
+SESSION_EXPIRE_AT_BROWSER_CLOSE= True
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Application definition
 
