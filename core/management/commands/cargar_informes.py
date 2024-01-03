@@ -43,7 +43,16 @@ class Command(BaseCommand):
                 informe.titulo = str(row[7].value).strip().upper().replace("\"", "").replace("_X000D_", "").strip()
                 informe.autores = autores.strip().upper().replace("_X000D_", "")
                 informe.solicitud_servicio = solicitud_servicio if solicitud_servicio != '' and solicitud_servicio != 'None' else None
-                informe.archivo = "/".join(row[-2].value.split('/')[-3:]) if row[-2].value and len(row[-2].value) else None
+                archivo = "/".join(row[-2].value.split('/')[-3:]) if row[-2].value and len(row[-2].value) and row[-2].value != 'documentone.htm' and  "/".join(row[-2].value.split('/')[-3:]) != '' else None
+
+                if(archivo):
+                    archivo = archivo.replace("\INFORMES\\", "").replace("\informes\\",'').replace("informes\\",'')
+                    informe.archivo = archivo
+                else:
+                    continue
+
+                print(f"{informe.archivo}")
+
                 informe.save()
 
                 descriptores = []                    

@@ -11,6 +11,9 @@ class BusquedaLibros(ListView):
     context_object_name = 'libros'
     paginate_by = 20
 
+    def get_context_data(self, **kwargs: Any) -> dict:
+        return {'titulo': 'Búsqueda de Libros', **super().get_context_data(**kwargs)}
+    
     def get_template_names(self) -> list:
         if(self.request.htmx):
             return 'partials/lista_libros.html'
@@ -79,6 +82,9 @@ class CreacionLibro(SuperUserRequiredMixin, CreateView):
     form_class = LibroForm
     success_url = '/'
 
+    def get_context_data(self, **kwargs: Any) -> dict:
+        return {'titulo': 'Registro de Nuevo Libro', **super().get_context_data(**kwargs)}
+
 class EdicionLibro(SuperUserRequiredMixin, UpdateView):
     template_name = 'libro_form.html'
     form_class = LibroForm
@@ -110,6 +116,9 @@ class BusquedaInformes(LoginRequiredMixin, BusquedaLibros):
             return 'partials/lista_informes.html'
         
         return 'busqueda_informes.html'
+    
+    def get_context_data(self, **kwargs: Any) -> dict:
+        return {'titulo': 'Búsqueda de Informes Técnicos', **super().get_context_data(**kwargs)}
     
     def filtro_libros(self, modelo = Informe):
         informes = super().filtro_libros(modelo)
@@ -154,6 +163,9 @@ class CreacionInforme(SuperUserRequiredMixin, CreateView):
     form_class = InformeForm
     success_url = 'publicaciones/busqueda/informes/'
 
+    def get_context_data(self, **kwargs: Any) -> dict:
+        return {'titulo': 'Registro de Informe Técnico', **super().get_context_data(**kwargs)}
+
 class EdicionInforme(SuperUserRequiredMixin, UpdateView):
     template_name = 'informe_form.html'
     form_class = InformeForm
@@ -162,7 +174,7 @@ class EdicionInforme(SuperUserRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs: Any) -> dict:
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Edición de Informe'
+        context['titulo'] = 'Edición de Informe Técnico'
         context['form'].fields['descriptores'].initial = "; ".join(context['object'].descriptores.all().order_by('nombre').values_list('nombre', flat=True))
 
         return context
