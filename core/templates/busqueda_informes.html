@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+<div class="row">
+    <div class="col-md-4 col-sm-12 d-flex justify-content-center align-items-center border-end" style="height: 90vh;">
+        <div class="w-100 p-5">
+            <h5 class="text-center">Formulario de Filtrado</h5>
+            <form class="d-flex flex-column" hx-get="{% url 'busqueda_informes' %}" hx-trigger="submit, keyup delay:1s" hx-target="#resultados_informes" hx-indicator="#spinner">               
+                <label for="titulo">Título</label>
+                <input id="titulo" type="text" class="form-control" name="titulo"> <br>
+
+                <label for="solicitud_servicio">Solicitud de Servicio:</label>
+                <input id="solicitud_servicio" type="text" class="form-control" name="solicitud_servicio"> <br>
+
+                <label for="programa">Programa</label>
+                <input id="programa" type="text" class="form-control" name="programa"> <br>
+                
+                <label for="autor">Autor</label>
+                <input id="autor" type="text" class="form-control"  name="autor"> <br>
+
+                <label for="ano">Año</label>
+                <input id="ano" type="text" class="form-control" name="ano"> <br>
+
+                <label for="descriptores">Descriptores</label>
+                <input id="descriptores"  type="text" class="form-control" name="descriptores" placeholder="Separe con ';'"> <br>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-danger">Buscar</button>
+                </div>
+            </form>
+            {% if request.user.is_superuser %}
+            <hr>
+            <div class="d-flex justify-content-center">
+                <a href="{% url 'creacion_libro' %}" class="btn btn-success">+ Registrar Nuevo Informe</a>
+            </div>
+            {% endif %}
+        </div>    
+    </div>
+    <div class="col-md-8 col-sm-12" style="height: 90vh;">
+        <div>
+            <h2 class="text-center border-bottom">Búsqueda de Informes</h2>
+        </div>
+        <div class="row g-2 p-2" style="overflow-y: scroll; height: 85vh;" id="resultados_informes">
+            {% include 'partials/lista_informes.html' %}              
+        </div>
+    </div>
+</div>
+{% endblock %}

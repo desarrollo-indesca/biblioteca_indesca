@@ -1,0 +1,64 @@
+    {% for libro in libros %}
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5>{{libro.titulo}}</h5>
+          <div class="row">
+            <div class="col-md-8 col-sm-12">
+              <ul>
+                <li><b>Autores:</b> {{libro.autores}}</li>
+                <li><b>Año:</b> {% if libro.ano_publicacion %}{{libro.ano_publicacion}}{%else%}N/A{%endif%}</li>
+                <li><b>Código:</b> {{libro.codigo}}</li>
+              </ul>
+            </div>
+            <div class="col-md-4 col-sm-12">
+              <ul>
+                <li><b>C. de Inf.:</b> {{libro.cdinf}}</li>
+                <li><b>C. de LC:</b> {{libro.cdlc}}</li>
+                <li><b>C. de Cuter:</b> {% if libro.cdcuter %}{{libro.cdcuter}}{%else%}No tiene{% endif %}</li>
+                <li><b>C. de Dewey:</b> {% if libro.cddewey %}{{libro.cddewey}}{%else%}No tiene{% endif %}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-center">
+            {% if request.user.is_superuser %}
+            <div>
+              <a href="{% url 'edicion_libro' pk=libro.pk %}" class="btn btn-secondary">Editar</a>
+            </div>
+            {% endif %}
+            
+            {% if libro.archivo %}
+            <div>
+                <a href="/media/{{libro.archivo}}" target="_blank" class="btn btn-danger">Lectura Digital</a>
+            </div>
+            {%endif%}
+
+            {% if request.user.is_superuser %}
+            <div>
+              <button hx-post="{% url 'eliminacion_libro' pk=libro.pk %}" hx-swap="delete" hx-target="closest .card" hx-confirm="Esta acción es irreversible. ¿Está seguro que desea eliminar este libro?" class="btn btn-warning">Eliminar</button>
+            </div>
+            {% endif %}
+          </div>
+          
+          {% if libro.resumen %}
+          <hr>
+          <small><b>RESUMEN:</b> {{libro.resumen}}</small>
+          {% endif %}
+
+          <hr>
+          <small><b>DESCRIPTORES:</b> {% for descriptor in libro.descriptores.all %}{{descriptor}}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
+        </div>
+      </div>
+    </div>
+
+    {% if forloop.last and page_obj.has_next %}
+      <p class="text-center" 
+      hx-get="?page={{page_obj.next_page_number}}&autor={{request.GET.autor}}&titulo={{request.GET.titulo}}&ano={{request.GET.ano}}&descriptores={{request.GET.descriptores}}"
+      hx-trigger="intersect once"
+      hx-swap="outerHTML" hx-indicator="#spinner">Cargando...</p>
+    {% endif %}
+
+    {% empty %}
+    <p class="text-center">No se encontraron resultados para su búsqueda.</p>    
+    {% endfor %}  

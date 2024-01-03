@@ -16,6 +16,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+LOGIN_URL = 'bienvenida'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -27,7 +28,9 @@ SECRET_KEY = 'django-insecure-(m=4yu3gx#(&!u^8vi!n^nkmix2&7)uda(*9kic*k9(_s95tui
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+SESSION_COOKIE_AGE = 25 * 60
+SESSION_EXPIRE_AT_BROWSER_CLOSE= True
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Application definition
 
@@ -39,7 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'biblioteca_digital',
+    'django_htmx',
+    'widget_tweaks',
     'core',
+    'usuarios',
     'pwa',
 ]
 
@@ -51,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = 'biblioteca_digital.urls'
@@ -73,14 +80,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'biblioteca_digital.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'biblioteca_digital',  
+        'USER': 'root',  
+        'PASSWORD': '',  
+        'HOST': 'localhost',  
+        'PORT': '3306',  
+        'OPTIONS': {  
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
+        }  
     }
 }
 
@@ -136,6 +149,11 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+# MEDIA
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+
+{% block contenido %}
+<div style="min-height: 90vh;" class="container">
+    <h2 class="text-center">{{titulo}}</h2>
+    <hr>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+    
+        <div class="row">
+            <div class="col-12">
+                <h4 class="text-center mb-3">Datos Generales</h3>
+            </div>
+
+            <div class="form-group col-md-4 col-sm-12">
+                <label for="codigo">Código:</label>
+                {% render_field form.codigo class="form-control" %}
+                {% if form.codigo.errors %}<span>{% for error in form.codigo.errors %}{{error}} {% endfor %}</span>{% endif %}
+            </div>
+            <div class="form-group col-md-8 col-sm-12">
+                <label for="titulo">Título del Libro:</label>
+                {% render_field form.titulo class="form-control" %}
+                {% if form.titulo.errors %}<span>{% for error in form.titulo.errors %}{{error}} {% endfor %}</span>{% endif %}
+            </div>
+
+            <div class="form-group col-md-6 col-sm-12">
+                <label for="autores">Autores del Libro:</label>
+                {% render_field form.autores class="form-control" %}
+                {% if form.autores.errors %}<span>{% for error in form.autores.errors %}{{error}} {% endfor %}</span>{% endif %}
+            </div>
+            <div class="form-group col-md-6 col-sm-12">
+                <label for="ano_publicacion">Año de publicación:</label>
+                {% render_field form.ano_publicacion class="form-control" %}
+                {% if form.ano_publicacion.errors %}<span>{% for error in form.ano_publicacion.errors %}{{error}} {% endfor %}</span>{% endif %}
+            </div>
+
+            <div class="form-group col-12">
+                <label for="descriptores">Documento:</label>
+                <div class="input-group">
+                    <input type="file" name="archivo" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="form-control" id="id_archivo">
+                </div>
+                {% if form.archivo.errors %}<span>{% for error in form.archivo.errors %}{{error}} {% endfor %}</span>{% endif %}
+                {% if object.archivo %}
+                <small><a href="/media/{{object.archivo}}" target="_blank">Ya hay un archivo cargado.</a></small>
+                {% endif %}
+            </div>
+            <div class="form-group col-12">
+                <label for="direccion">Descriptores (separe con ;):</label>
+                {% render_field form.descriptores class="form-control" %}
+                {% if form.descriptores.errors %}<span>{% for error in form.descriptores.errors %}{{error}} {% endfor %}</span>{% endif %}
+            </div>
+
+            <div class="form-group col-12">
+                <label for="resumen">Resumen:</label>
+                {% render_field form.resumen class="form-control" %}
+                {% if form.resumen.errors %}<span>{% for error in form.resumen.errors %}{{error}} {% endfor %}</span>{% endif %}
+            </div>
+
+            <!-- INFORMACIÓN DE UBICACIÓN -->
+
+            <div class="col-12">
+                <hr>
+                <h4 class="mb-3 text-center">Información de Ubicación</h4>
+            </div>
+
+            <div class="form-group col-md-6 col-sm-12">
+                <label for="cdinf">C. de Inf.:</label>
+                {% render_field form.cdinf class="form-control" %}
+                {% if form.cdinf.errors %}<span>{% for error in form.cdinf.errors %}{{error}} {% endfor %}</span>{% endif %}
+            </div>
+            <div class="form-group col-md-6 col-sm-12">
+                <label for="cdlc">C. de LC:</label>
+                {% render_field form.cdlc class="form-control" %}
+                {% if form.cdlc.errors %}<span>{% for error in form.cdlc.errors %}{{error}} {% endfor %}</span>{% endif %}
+            </div>
+
+            <div class="form-group col-md-6 col-sm-12">
+                <label for="cdcuter">C. de Cuter:</label>
+                {% render_field form.cdcuter class="form-control" %}
+                {% if form.cdcuter.errors %}<span>{% for error in form.cdcuter.errors %}{{error}} {% endfor %}</span>{% endif %}
+            </div>
+            <div class="form-group col-md-6 col-sm-12">
+                <label for="cdewey">C. de Dewey:</label>
+                {% render_field form.cddewey class="form-control" %}
+                {% if form.cddewey.errors %}<span>{% for error in form.cddewey.errors %}{{error}} {% endfor %}</span>{% endif %}
+            </div>
+
+            <div class="col-12 d-flex justify-content-center mt-2 mb-2">
+                <button id="form_submit" type="submit" class="btn btn-danger" >Enviar Formulario</button>
+            </div>
+            
+        </div>
+    </form>
+</div>
+{% endblock %}
