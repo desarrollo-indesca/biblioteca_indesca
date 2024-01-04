@@ -5,7 +5,7 @@ from biblioteca_digital.settings import BASE_DIR
 import openpyxl
 
 class Command(BaseCommand):
-    help = "Carga los libros en la base de datos junto a los posibles descriptores"
+    help = "Carga los informes en la base de datos junto a los posibles descriptores"
 
     def handle(self, *args, **options):
         dataframe = openpyxl.load_workbook(BASE_DIR.__str__() + "\\INFORMES.xlsx")['INFORMES']

@@ -13,6 +13,10 @@ class SuperUserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     """
     Resumen:
         Mixin para verificar que un usuario sea superusuario, para permitir o denegar su acceso.
+
+    Implementa:
+        LoginRequiredMixin: Para verificar que el usuario esté autenticado.
+        UserPassesTestMixin: Para verificar que el usuario sea superusuario.
     
     Métodos:
         test_func(self, request)
