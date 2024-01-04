@@ -269,8 +269,8 @@ class CambiarContrasena(SuperUserRequiredMixin, View):
     def validar(self, data):
         errores = []
 
-        if(len(data['password']) < 8):
-            errores.append("La contraseña debe contar con al menos 8 caracteres.")
+        if(len(data['password']) < 3):
+            errores.append("La contraseña debe contar con al menos 3 caracteres.")
 
         return errores
 
