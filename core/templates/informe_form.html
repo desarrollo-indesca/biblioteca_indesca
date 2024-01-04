@@ -7,7 +7,7 @@
     <h2 class="text-center">{{titulo}}</h2>
     <hr>
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" onSubmit="document.getElementById('submit').disabled=true;">
         {% csrf_token %}
     
         <div class="row g-2">
@@ -81,7 +81,7 @@
             </div>
 
             <div class="col-12 d-flex justify-content-center mt-3 mb-3">
-                <button type="submit" class="btn btn-danger">Enviar Formulario</button>
+                <button type="submit" class="btn btn-danger" id="submit">Enviar Formulario</button>
             </div>
             
         </div>

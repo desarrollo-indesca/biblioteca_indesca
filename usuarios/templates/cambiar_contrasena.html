@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block contenido %}
-    <form method="post">
+    <form method="post" onSubmit="document.getElementById('submit').disabled=true;">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-3 col-lg-2 d-inline-flex justify-content-center align-items-center"><a class="btn d-block btn-secondary" href="{% url 'consultar_usuarios' %}">↶ Regresar</a></div>
@@ -35,7 +35,7 @@
         <hr>
         
         <div class="d-flex justify-content-center mb-3">
-            <button class="btn btn-danger">Cambiar Contraseña</button>
+            <button class="btn btn-danger" id="submit">Cambiar Contraseña</button>
         </div>
     </form>
 {% endblock %}
