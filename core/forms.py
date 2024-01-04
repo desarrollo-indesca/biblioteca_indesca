@@ -24,10 +24,10 @@ class LibroForm(forms.ModelForm):
 
     class Meta:
         model = Libro
-        exclude = ['fecha_creacion', 'fecha_actualizacion', 'id', 'descriptores']
+        exclude = ['id', 'descriptores']
 
 class InformeForm(LibroForm):
 
     class Meta:
         model = Informe
-        exclude = ['fecha_creacion', 'fecha_actualizacion', 'id', 'descriptores']
+        exclude = ['id', 'descriptores']
