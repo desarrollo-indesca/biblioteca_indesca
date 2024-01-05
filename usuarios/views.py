@@ -13,6 +13,10 @@ class SuperUserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     """
     Resumen:
         Mixin para verificar que un usuario sea superusuario, para permitir o denegar su acceso.
+
+    Implementa:
+        LoginRequiredMixin: Para verificar que el usuario esté autenticado.
+        UserPassesTestMixin: Para verificar que el usuario sea superusuario.
     
     Métodos:
         test_func(self, request)
@@ -269,8 +273,8 @@ class CambiarContrasena(SuperUserRequiredMixin, View):
     def validar(self, data):
         errores = []
 
-        if(len(data['password']) < 8):
-            errores.append("La contraseña debe contar con al menos 8 caracteres.")
+        if(len(data['password']) < 3):
+            errores.append("La contraseña debe contar con al menos 3 caracteres.")
 
         return errores
 

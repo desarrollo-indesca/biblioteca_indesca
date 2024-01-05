@@ -7,7 +7,7 @@
     <h2 class="text-center">{{titulo}}</h2>
     <hr>
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" onSubmit="document.getElementById('submit').disabled=true;">
         {% csrf_token %}
     
         <div class="row">
@@ -43,7 +43,7 @@
                     <input type="file" name="archivo" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="form-control" id="id_archivo">
                 </div>
                 {% if form.archivo.errors %}<span>{% for error in form.archivo.errors %}{{error}} {% endfor %}</span>{% endif %}
-                {% if object.archivo %}
+                {% if object.archivo and object.verificar_archivo %}
                 <small><a href="/media/{{object.archivo}}" target="_blank">Ya hay un archivo cargado.</a></small>
                 {% endif %}
             </div>
@@ -89,7 +89,8 @@
             </div>
 
             <div class="col-12 d-flex justify-content-center mt-2 mb-2">
-                <button id="form_submit" type="submit" class="btn btn-danger" >Enviar Formulario</button>
+                <a href="{% url 'busqueda_informes' %}" class="btn btn-secondary">Regresar</a>&nbsp;
+                <button id="submit" type="submit" class="btn btn-danger" id="submit">Enviar Formulario</button>
             </div>
             
         </div>
