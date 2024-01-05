@@ -70,7 +70,10 @@ class Publicacion(models.Model):
         Resumen:
             Método que verifica si el archivo de la publicación existe en el servidor.
         '''
-        return os.path.exists(self.archivo.path)
+        if(self.archivo):
+            return os.path.exists(self.archivo.path)
+        
+        return False
     
     class Meta:
         # Se ordena por título y año de publicación. Es una clase abstracta, por lo que no se creará una tabla en la base de datos para este modelo.
