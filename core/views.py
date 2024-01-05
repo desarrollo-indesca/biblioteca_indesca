@@ -38,10 +38,11 @@ class BusquedaLibros(ListView):
         return 'busqueda_libros.html'
     
     def filtro_libros(self, modelo = Libro):
-        autor = self.request.GET.get('autor', None)
-        titulo = self.request.GET.get('titulo', None)
-        descriptores = self.request.GET.get('descriptores', None)
-        ano = self.request.GET.get('ano', None)
+        autor = self.request.GET.get('autor', None) if self.request.GET.get('autor', None) and self.request.GET.get('autor', None) != '' else None
+        titulo = self.request.GET.get('titulo', None) if self.request.GET.get('titulo', None) and self.request.GET.get('titulo', None) != '' else None
+        descriptores = self.request.GET.get('descriptores', None) if self.request.GET.get('descriptores', None) and self.request.GET.get('descriptores', None) != '' else None
+        ano = self.request.GET.get('ano', None) if self.request.GET.get('ano', None) and self.request.GET.get('ano', None) != '' else None
+        archivo = int(self.request.GET.get('archivo', 0)) if self.request.GET.get('archivo', None) and self.request.GET.get('archivo') != '' else None
 
         libros, prev_libros = None, None
 
@@ -57,13 +58,13 @@ class BusquedaLibros(ListView):
         else:
             libros = prev_libros
 
-        if(ano):
-            libros = modelo.objects.filter(ano_publicacion__icontains=ano) if not libros else libros.filter(ano_publicacion__icontains=ano)
-
         if(libros):
             prev_libros = libros
         else:
             libros = prev_libros
+
+        if(ano):
+            libros = modelo.objects.filter(ano_publicacion__icontains=ano) if not libros else libros.filter(ano_publicacion__icontains=ano)
 
         if(descriptores):
             for descriptor in descriptores.split(';'):
@@ -74,6 +75,13 @@ class BusquedaLibros(ListView):
             libros = prev_libros
         else:
             libros = libros.distinct()
+
+        if(archivo):
+            libros_sin_dir = [x.pk for x in libros if x.verificar_archivo()] if libros else [x.pk for x in modelo.objects.all() if x.verificar_archivo()]
+            libros = modelo.objects.filter(pk__in=libros_sin_dir) if not libros else libros.filter(pk__in=libros_sin_dir)
+        elif(archivo == 0):
+            libros_sin_dir = [x.pk for x in libros if not x.verificar_archivo()] if libros else [x.pk for x in modelo.objects.all() if not x.verificar_archivo()]
+            libros = modelo.objects.filter(pk__in=libros_sin_dir) if not libros else libros.filter(pk__in=libros_sin_dir)
 
         return libros
     
