@@ -1,4 +1,5 @@
 from django.db import models
+import os
 
 # Create your models here.
 
@@ -63,6 +64,13 @@ class Publicacion(models.Model):
 
     def __str__(self):
         return self.titulo
+    
+    def verificar_archivo(self):
+        '''
+        Resumen:
+            Método que verifica si el archivo de la publicación existe en el servidor.
+        '''
+        return os.path.exists(self.archivo.path)
     
     class Meta:
         # Se ordena por título y año de publicación. Es una clase abstracta, por lo que no se creará una tabla en la base de datos para este modelo.

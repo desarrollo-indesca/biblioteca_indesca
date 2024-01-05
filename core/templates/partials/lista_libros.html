@@ -29,7 +29,7 @@
             </div>
             {% endif %}
             
-            {% if libro.archivo %}
+            {% if libro.archivo and libro.verificar_archivo %}
             <div>
                 <a href="/media/{{libro.archivo}}" target="_blank" class="btn btn-danger">Lectura Digital</a>
             </div>

@@ -47,6 +47,7 @@ class Command(BaseCommand):
 
                 if(archivo):
                     archivo = archivo.replace("\INFORMES\\", "").replace("\informes\\",'').replace("informes\\",'')
+                    archivo = 'informes/' + archivo if archivo and archivo != '' else ''
                     informe.archivo = archivo
                 else:
                     continue
