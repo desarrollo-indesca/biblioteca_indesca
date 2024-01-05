@@ -25,9 +25,9 @@ LOGIN_URL = 'bienvenida'
 SECRET_KEY = 'django-insecure-(m=4yu3gx#(&!u^8vi!n^nkmix2&7)uda(*9kic*k9(_s95tui'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','172.20.30.117']
 SESSION_COOKIE_AGE = 25 * 60
 SESSION_EXPIRE_AT_BROWSER_CLOSE= True
 SESSION_SAVE_EVERY_REQUEST = True
@@ -88,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'biblioteca_digital',  
         'USER': 'root',  
-        'PASSWORD': '',  
+        'PASSWORD': '54321Asd.',  
         'HOST': 'localhost',  
         'PORT': '3306',  
         'OPTIONS': {  
