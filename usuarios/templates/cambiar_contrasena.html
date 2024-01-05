@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block contenido %}
-    <form method="post">
+    <form method="post" onSubmit="document.getElementById('submit').disabled=true;">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-3 col-lg-2 d-inline-flex justify-content-center align-items-center"><a class="btn d-block btn-secondary" href="{% url 'consultar_usuarios' %}">↶ Regresar</a></div>
@@ -27,7 +27,7 @@
             <div class="col-3"></div>
             <div class="col-6">
                 <label class="form-label" for="password">Contraseña:</label>
-                <input type="password" name="password" class="form-control" id="password" maxlength="100" minlength="8" required>
+                <input type="password" name="password" class="form-control" id="password" maxlength="100" minlength="3" placeholder="Al menos 3 caracteres." required>
             </div>
             <div class="col-3"></div>
         </div>
@@ -35,7 +35,7 @@
         <hr>
         
         <div class="d-flex justify-content-center mb-3">
-            <button class="btn btn-danger">Cambiar Contraseña</button>
+            <button class="btn btn-danger" id="submit">Cambiar Contraseña</button>
         </div>
     </form>
 {% endblock %}
