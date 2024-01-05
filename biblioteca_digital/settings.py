@@ -27,7 +27,11 @@ SECRET_KEY = 'django-insecure-(m=4yu3gx#(&!u^8vi!n^nkmix2&7)uda(*9kic*k9(_s95tui
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+<<<<<<< HEAD
 ALLOWED_HOSTS = ['127.0.0.1','172.20.30.117']
+=======
+ALLOWED_HOSTS = ['127.0.0.1']
+>>>>>>> 47bff6c77854bbadcec1f4ae40821eaf55fa3bb4
 SESSION_COOKIE_AGE = 25 * 60
 SESSION_EXPIRE_AT_BROWSER_CLOSE= True
 SESSION_SAVE_EVERY_REQUEST = True
@@ -42,11 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'biblioteca_digital',
+    'whitenoise',
     'django_htmx',
     'widget_tweaks',
     'core',
-    'usuarios',
-    'pwa',
+    'usuarios'
 ]
 
 MIDDLEWARE = [
