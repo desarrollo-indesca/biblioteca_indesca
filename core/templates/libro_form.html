@@ -43,7 +43,7 @@
                     <input type="file" name="archivo" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="form-control" id="id_archivo">
                 </div>
                 {% if form.archivo.errors %}<span>{% for error in form.archivo.errors %}{{error}} {% endfor %}</span>{% endif %}
-                {% if object.archivo and object.verificar_archivo %}
+                {% if object.archivo and object.archivo_existe %}
                 <small><a href="/media/{{object.archivo}}" target="_blank">Ya hay un archivo cargado.</a></small>
                 {% endif %}
             </div>
