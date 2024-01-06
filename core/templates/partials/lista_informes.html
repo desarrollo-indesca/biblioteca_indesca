@@ -28,7 +28,7 @@
             </div>
             {% endif %}
             
-            {% if informe.archivo and informe.verificar_archivo %}
+            {% if informe.archivo and informe.archivo_existe %}
             <div>
                 <a href="/media/{{informe.archivo}}" target="_blank" class="btn btn-danger">Lectura Digital</a>
             </div>
@@ -56,7 +56,7 @@
 
     {% if forloop.last and page_obj.has_next %}
       <p class="text-center" 
-      hx-get="?page={{page_obj.next_page_number}}&autor={{request.GET.autor}}&titulo={{request.GET.titulo}}&ano={{request.GET.ano}}&descriptores={{request.GET.descriptores}}&solicitud_servicio={{request.GET.solicitud_servicio}}&programa={{request.GET.programa}}"
+      hx-get="?page={{page_obj.next_page_number}}&autor={{request.GET.autor}}&titulo={{request.GET.titulo}}&ano={{request.GET.ano}}&descriptores={{request.GET.descriptores}}&solicitud_servicio={{request.GET.solicitud_servicio}}&programa={{request.GET.programa}}&archivo={{request.GET.archivo}}"
       hx-trigger="intersect once"
       hx-swap="outerHTML" hx-indicator="#spinner">Cargando...</p>
     {% endif %}

@@ -65,7 +65,7 @@ class Publicacion(models.Model):
     def __str__(self):
         return self.titulo
     
-    def verificar_archivo(self):
+    def archivo_existe(self):
         '''
         Resumen:
             Método que verifica si el archivo de la publicación existe en el servidor.

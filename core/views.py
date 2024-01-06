@@ -44,24 +44,13 @@ class BusquedaLibros(ListView):
         ano = self.request.GET.get('ano', None) if self.request.GET.get('ano', None) and self.request.GET.get('ano', None) != '' else None
         archivo = int(self.request.GET.get('archivo', 0)) if self.request.GET.get('archivo', None) and self.request.GET.get('archivo') != '' else None
 
-        libros, prev_libros = None, None
+        libros = None
 
         if(autor):
             libros = modelo.objects.filter(autores__icontains=autor)
-            prev_libros = libros
 
         if(titulo):
             libros = modelo.objects.filter(titulo__icontains=titulo) if not libros else libros.filter(titulo__icontains=titulo)
-        
-        if(libros):
-            prev_libros = libros
-        else:
-            libros = prev_libros
-
-        if(libros):
-            prev_libros = libros
-        else:
-            libros = prev_libros
 
         if(ano):
             libros = modelo.objects.filter(ano_publicacion__icontains=ano) if not libros else libros.filter(ano_publicacion__icontains=ano)
@@ -72,15 +61,15 @@ class BusquedaLibros(ListView):
                 libros = modelo.objects.filter(descriptores__nombre__icontains=descriptor) if not libros else libros.filter(descriptores__nombre__icontains=descriptor)
 
         if(not libros):
-            libros = prev_libros
+            libros = modelo.objects.none()
         else:
             libros = libros.distinct()
 
         if(archivo):
-            libros_sin_dir = [x.pk for x in libros if x.verificar_archivo()] if libros else [x.pk for x in modelo.objects.all() if x.verificar_archivo()]
+            libros_sin_dir = [x.pk for x in libros if x.archivo_existe()] if libros else [x.pk for x in modelo.objects.all() if x.archivo_existe()]
             libros = modelo.objects.filter(pk__in=libros_sin_dir) if not libros else libros.filter(pk__in=libros_sin_dir)
         elif(archivo == 0):
-            libros_sin_dir = [x.pk for x in libros if not x.verificar_archivo()] if libros else [x.pk for x in modelo.objects.all() if not x.verificar_archivo()]
+            libros_sin_dir = [x.pk for x in libros if not x.archivo_existe()] if libros else [x.pk for x in modelo.objects.all() if not x.archivo_existe()]
             libros = modelo.objects.filter(pk__in=libros_sin_dir) if not libros else libros.filter(pk__in=libros_sin_dir)
 
         return libros
@@ -91,9 +80,6 @@ class BusquedaLibros(ListView):
         # Si se está usando htmx y se están enviando parámetros de búsqueda (Filtrado)
         if(self.request.htmx and len(self.request.GET.keys())):
             libros = self.filtro_libros()
-
-            if(not libros and len(self.request.GET.keys())):
-                libros = Libro.objects.none()
         
         # Si no se está usando htmx y no se están enviando parámetros de búsqueda (Listado/Paginación)
         if((not self.request.htmx or all(y == '' for x,y in self.request.GET.items() if x != 'page' )) and not libros):
@@ -219,18 +205,11 @@ class BusquedaInformes(LoginRequiredMixin, BusquedaLibros):
         solicitud_servicio = self.request.GET.get('solicitud_servicio', None)
         programa = self.request.GET.get('programa', None)
 
-        prev_informes = informes
         if(solicitud_servicio):
             informes = modelo.objects.filter(solicitud_servicio__icontains=solicitud_servicio) if not informes else informes.filter(solicitud_servicio__icontains=solicitud_servicio)
 
-        if(not informes):
-            informes = prev_informes
-
         if(programa):
             informes = modelo.objects.filter(programa__nombre__icontains=programa) if not informes else informes.filter(programa__nombre__icontains=programa)
-
-        if(not informes):
-            informes = prev_informes
 
         return informes
     
