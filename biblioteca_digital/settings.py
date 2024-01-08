@@ -22,10 +22,11 @@ LOGIN_URL = 'bienvenida'
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(m=4yu3gx#(&!u^8vi!n^nkmix2&7)uda(*9kic*k9(_s95tui'
+with open('C:/website2/biblioteca_digital/secret-key.txt','r') as f:
+    SECRET_KEY = f.read()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1','172.20.30.117']
 
@@ -84,19 +85,20 @@ WSGI_APPLICATION = 'biblioteca_digital.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'biblioteca_digital',  
-        'USER': 'root',  
-        'PASSWORD': '54321Asd.',  
-        'HOST': 'localhost',  
-        'PORT': '3306',  
-        'OPTIONS': {  
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
-        }  
+with open('C:/website2/biblioteca_digital/db-key.txt') as f:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'biblioteca_digital',  
+            'USER': 'root',  
+            'PASSWORD': f.read(),  
+            'HOST': 'localhost',  
+            'PORT': '3306',  
+            'OPTIONS': {  
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
+            }  
+        }
     }
-}
 
 TEMPLATES = [
     {

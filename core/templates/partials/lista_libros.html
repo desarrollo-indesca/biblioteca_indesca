@@ -29,7 +29,7 @@
             </div>
             {% endif %}
             
-            {% if libro.archivo and libro.verificar_archivo %}
+            {% if libro.archivo and libro.archivo_existe %}
             <div>
                 <a href="/media/{{libro.archivo}}" target="_blank" class="btn btn-danger">Lectura Digital</a>
             </div>
@@ -55,7 +55,7 @@
 
     {% if forloop.last and page_obj.has_next %}
       <p class="text-center" 
-      hx-get="?page={{page_obj.next_page_number}}&autor={{request.GET.autor}}&titulo={{request.GET.titulo}}&ano={{request.GET.ano}}&descriptores={{request.GET.descriptores}}"
+      hx-get="?page={{page_obj.next_page_number}}&autor={{request.GET.autor}}&titulo={{request.GET.titulo}}&ano={{request.GET.ano}}&descriptores={{request.GET.descriptores}}&archivo={{request.GET.archivo}}"
       hx-trigger="intersect once"
       hx-swap="outerHTML" hx-indicator="#spinner">Cargando...</p>
     {% endif %}
