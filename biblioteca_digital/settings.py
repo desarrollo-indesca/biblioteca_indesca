@@ -25,7 +25,7 @@ LOGIN_URL = 'bienvenida'
 SECRET_KEY = 'django-insecure-(m=4yu3gx#(&!u^8vi!n^nkmix2&7)uda(*9kic*k9(_s95tui'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1']
 SESSION_COOKIE_AGE = 25 * 60
@@ -85,15 +85,8 @@ WSGI_APPLICATION = 'biblioteca_digital.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'biblioteca_digital',  
-        'USER': 'root',  
-        'PASSWORD': '',  
-        'HOST': 'localhost',  
-        'PORT': '3306',  
-        'OPTIONS': {  
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
-        }  
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3'
     }
 }
 
