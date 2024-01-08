@@ -251,7 +251,7 @@ class CreacionInforme(SuperUserRequiredMixin, CreateView):
     '''
     template_name = 'informe_form.html'
     form_class = InformeForm
-    success_url = 'publicaciones/busqueda/informes/'
+    success_url = '/publicaciones/busqueda/informes/'
 
     def get_context_data(self, **kwargs: Any) -> dict:
         return {'titulo': 'Registro de Informe Técnico', **super().get_context_data(**kwargs)}
@@ -306,3 +306,64 @@ def eliminar_informe(request, pk):
         return HttpResponse(status=200)
     
     return HttpResponse(status=403)
+
+def obtener_archivo_libro(request, pk):
+    '''
+    Resumen:
+        Obtiene el archivo de un libro según su PK.
+
+    Argumentos:
+        request: HttpRequest -> Solicitud HTTP.
+        pk: int -> ID del libro del que se quiere obtener el archivo.
+
+    Retorna:
+        HttpResponse -> Respuesta HTTP. Estatus 200 si fue exitoso, 403 o 404 si no.
+    '''
+    try:
+        if(request.method == 'GET'):
+            libro = Libro.objects.get(id=pk)
+            if(libro.archivo_existe()):
+                with open(libro.archivo.path, 'rb') as f:
+                    if(libro.archivo.name.lower().endswith('.pdf')):
+                        response = HttpResponse(f.read(), content_type='application/pdf')
+                    else:
+                        response = HttpResponse(f.read())
+                        response['Content-Disposition'] = 'attachment; filename=' + libro.archivo.name
+                return response
+            else:
+                return HttpResponse(status=404)
+        else:
+            return HttpResponse(status=404)
+    except:
+        return HttpResponse(status=404)
+    
+def obtener_archivo_informe(request, pk):
+    '''
+    Resumen:
+        Obtiene el archivo de un informe según su PK.
+
+    Argumentos:
+        request: HttpRequest -> Solicitud HTTP.
+        pk: int -> ID del informe del que se quiere obtener el archivo.
+
+    Retorna:
+        HttpResponse -> Respuesta HTTP. Estatus 200 si fue exitoso, 403 o 404 si no.
+    '''
+    try:
+        if(request.method == 'GET' and request.user.is_authenticated):
+            informe = Informe.objects.get(id=pk)
+            if(informe.archivo_existe()):
+                with open(informe.archivo.path, 'rb') as f:
+                    print(informe.archivo.name)
+                    if(informe.archivo.name.lower().endswith('.pdf')):
+                        response = HttpResponse(f.read(), content_type='application/pdf')
+                    else:
+                        response = HttpResponse(f.read())
+                        response['Content-Disposition'] = 'attachment; filename=' + informe.archivo.name
+                return response
+            else:
+                return HttpResponse(status=404)
+        elif(not request.user.is_authenticated):
+            return HttpResponse(status=403)
+    except:
+        return HttpResponse(status=404)
