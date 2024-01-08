@@ -251,7 +251,7 @@ class CreacionInforme(SuperUserRequiredMixin, CreateView):
     '''
     template_name = 'informe_form.html'
     form_class = InformeForm
-    success_url = 'publicaciones/busqueda/informes/'
+    success_url = '/publicaciones/busqueda/informes/'
 
     def get_context_data(self, **kwargs: Any) -> dict:
         return {'titulo': 'Registro de Informe Técnico', **super().get_context_data(**kwargs)}
@@ -320,7 +320,7 @@ def obtener_archivo_libro(request, pk):
         HttpResponse -> Respuesta HTTP. Estatus 200 si fue exitoso, 403 o 404 si no.
     '''
     try:
-        if(request.method == 'GET' and request.user.is_authenticated):
+        if(request.method == 'GET'):
             libro = Libro.objects.get(id=pk)
             if(libro.archivo_existe()):
                 with open(libro.archivo.path, 'rb') as f:
@@ -332,8 +332,8 @@ def obtener_archivo_libro(request, pk):
                 return response
             else:
                 return HttpResponse(status=404)
-        elif(not request.user.is_authenticated):
-            return HttpResponse(status=403)
+        else:
+            return HttpResponse(status=404)
     except:
         return HttpResponse(status=404)
     
