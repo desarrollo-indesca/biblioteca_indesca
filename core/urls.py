@@ -11,4 +11,7 @@ urlpatterns = [
     path('creacion/informe/', CreacionInforme.as_view(), name='creacion_informe'),
     path('edicion/informe/<int:pk>/', EdicionInforme.as_view(), name='edicion_informe'),
     path('eliminacion/informe/<int:pk>/', eliminar_informe, name='eliminacion_informe'),
+
+    path('lectura/libro/<int:pk>/', obtener_archivo_libro, name='leer_libro'),
+    path('lectura/informe/<int:pk>/', obtener_archivo_informe, name='leer_informe'),
 ]
