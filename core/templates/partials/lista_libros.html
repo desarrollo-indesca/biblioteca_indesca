@@ -31,7 +31,7 @@
             
             {% if libro.archivo and libro.archivo_existe %}
             <div>
-                <a href="/media/{{libro.archivo}}" target="_blank" class="btn btn-danger">Lectura Digital</a>
+                <a href="{% url 'leer_libro' pk=libro.pk %}" target="_blank" class="btn btn-danger">Lectura Digital</a>
             </div>
             {%endif%}
 
