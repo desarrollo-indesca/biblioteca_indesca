@@ -1,5 +1,6 @@
 from django import forms
 from .models import Libro, Descriptor, Informe
+from django.db import transaction 
 
 class GuardadoDescriptoresMixin(forms.ModelForm):
     descriptores = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Separe cada descriptor con el carácter ";"'}))
@@ -8,15 +9,20 @@ class GuardadoDescriptoresMixin(forms.ModelForm):
         res = super().save(commit)
         
         if(commit):
-            descriptores = self.cleaned_data['descriptores'].split(';')
-            for descriptor in descriptores:
-                descriptor = descriptor.strip().upper()
-                if(descriptor == '' or descriptor == 'NONE'):
-                    continue
-                descriptor = Descriptor.objects.get_or_create(nombre=descriptor)[0]
+            with transaction.atomic():
+                descriptores = self.cleaned_data['descriptores'].split(';')
+                
+                if(self.instance.pk):
+                    self.instance.descriptores.clear()
 
-                if(not res.descriptores.filter(nombre=descriptor.nombre).exists()):
-                    res.descriptores.add(descriptor)
+                for descriptor in descriptores:
+                    descriptor = descriptor.strip().upper()
+                    if(descriptor == '' or descriptor == 'NONE'):
+                        continue
+                    descriptor = Descriptor.objects.get_or_create(nombre=descriptor)[0]
+
+                    if(not res.descriptores.filter(nombre=descriptor.nombre).exists()):
+                        res.descriptores.add(descriptor)
 
         return res
 
