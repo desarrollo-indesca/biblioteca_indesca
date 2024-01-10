@@ -46,7 +46,7 @@
           <small><b>RESUMEN:</b> {{informe.resumen}}</small>
           {% endif %}
 
-          {% if descriptores %}
+          {% if informe.descriptores %}
           <hr>
           <small><b>DESCRIPTORES:</b> {% for descriptor in informe.descriptores.all %}{{descriptor}}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
           {% endif %}
