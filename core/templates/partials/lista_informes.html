@@ -1,4 +1,4 @@
-    {% for informe in informes %}
+﻿    {% for informe in informes %}
     <div class="col-12">
       <div class="card">
         <div class="card-body">
@@ -30,7 +30,7 @@
             
             {% if informe.archivo and informe.archivo_existe %}
             <div>
-                <a href="/media/{{informe.archivo}}" target="_blank" class="btn btn-danger">Lectura Digital</a>
+                <a href="{% url 'leer_informe' pk=informe.pk %}" target="_blank" class="btn btn-danger">Lectura Digital</a>
             </div>
             {%endif%}
 
@@ -46,7 +46,7 @@
           <small><b>RESUMEN:</b> {{informe.resumen}}</small>
           {% endif %}
 
-          {% if descriptores %}
+          {% if informe.descriptores %}
           <hr>
           <small><b>DESCRIPTORES:</b> {% for descriptor in informe.descriptores.all %}{{descriptor}}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
           {% endif %}

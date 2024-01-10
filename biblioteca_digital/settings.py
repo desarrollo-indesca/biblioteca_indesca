@@ -26,13 +26,14 @@ with open('C:/website2/biblioteca_digital/secret-key.txt','r') as f:
     SECRET_KEY = f.read()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','172.20.30.117']
 
-SESSION_COOKIE_AGE = 25 * 60
+SESSION_COOKIE_AGE = 8 * 60 * 60
 SESSION_EXPIRE_AT_BROWSER_CLOSE= True
 SESSION_SAVE_EVERY_REQUEST = True
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
 
 # Application definition
 
