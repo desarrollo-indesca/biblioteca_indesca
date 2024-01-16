@@ -89,10 +89,10 @@
             </div>
 
             <div class="col-12 d-flex justify-content-center mt-2 mb-2">
-                <a href="{% url 'busqueda_informes' %}" class="btn btn-secondary">↶ Regresar</a>&nbsp;
+                <a href="{% url 'busqueda_libros' %}?titulo={{request.session.params_libros.titulo}}&autor={{request.session.params_libros.autor}}&ano={{request.session.params_libros.ano}}&descriptores={{request.session.params_libros.descriptores}}&archivo={{request.session.params_libros.archivo}}" 
+                    class="btn btn-secondary">↶ Regresar</a>&nbsp;
                 <button id="submit" type="submit" class="btn btn-danger" id="submit">Enviar Formulario</button>
-            </div>
-            
+            </div>            
         </div>
     </form>
 </div>
