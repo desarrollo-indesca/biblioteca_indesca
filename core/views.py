@@ -46,65 +46,65 @@ class BusquedaLibros(ListView):
         ano = self.request.GET.get('ano', None) if self.request.GET.get('ano', None) and self.request.GET.get('ano', None) not in ['','None'] else None
         archivo = int(self.request.GET.get('archivo', 0)) if self.request.GET.get('archivo', None) and self.request.GET.get('archivo') not in ['', 'None'] else None
 
+        # Aquí el session se utiliza para guardar los parámetros de búsqueda para que se mantengan al cambiar de página
         if(not self.request.htmx):
             if(not autor and (self.request.session.get('params_libros') or self.request.session.get('params_informes'))):
-                if(self.request.session.get('params_libros')):
+                if(modelo == Libro):
                     autor = self.request.session.get('params_libros').get('autor') if self.request.session['params_libros']['autor'] not in ['', 'None'] else None
-                elif(self.request.session.get('params_informes')):
+                elif(modelo == Informe):
                     autor = self.request.session.get('params_informes').get('autor') if self.request.session['params_informes']['autor'] not in ['', 'None'] else None
 
             if(not titulo and (self.request.session.get('params_libros') or self.request.session.get('params_informes'))):
-                if(self.request.session.get('params_libros')):
+                if(modelo == Libro):
                     titulo = self.request.session.get('params_libros').get('titulo') if self.request.session['params_libros']['titulo'] not in ['', 'None'] else None
-                elif(self.request.session.get('params_informes')):
+                elif(modelo == Informe):
                     titulo = self.request.session.get('params_informes').get('titulo') if self.request.session['params_informes']['titulo'] not in ['', 'None'] else None
 
             if(not descriptores and (self.request.session.get('params_libros') or self.request.session.get('params_informes'))):
-                if(self.request.session.get('params_libros')):
+                if(modelo == Libro):
                     descriptores = self.request.session.get('params_libros').get('descriptores') if self.request.session['params_libros']['descriptores'] not in ['', 'None'] else None
-                elif(self.request.session.get('params_informes')):
+                elif(modelo == Informe):
                     descriptores = self.request.session.get('params_informes').get('descriptores') if self.request.session['params_informes']['descriptores'] not in ['', 'None'] else None
 
             if(not ano and (self.request.session.get('params_libros') or self.request.session.get('params_informes'))):
-                if(self.request.session.get('params_libros')):
+                if(modelo == Libro):
                     ano = self.request.session.get('params_libros').get('ano') if self.request.session['params_libros']['ano'] not in ['', 'None'] else None
-                elif(self.request.session.get('params_informes')):
+                elif(modelo == Informe):
                     ano = self.request.session.get('params_informes').get('ano') if self.request.session['params_informes']['ano'] not in ['', 'None'] else None
 
             if(not archivo and (self.request.session.get('params_libros') or self.request.session.get('params_informes'))):
-                if(self.request.session.get('params_libros')):
+                if(modelo == Libro):
                     archivo = self.request.session.get('params_libros').get('archivo') if self.request.session['params_libros']['archivo'] not in ['', 'None'] else None
-                elif(self.request.session.get('params_informes')):
+                elif(modelo == Informe):
                     archivo = self.request.session.get('params_informes').get('archivo') if self.request.session['params_informes']['archivo'] not in ['', 'None'] else None
 
         libros = None
 
         if(autor):
             libros = modelo.objects.filter(autores__icontains=autor)
-
+        
         if(titulo):
-            libros = modelo.objects.filter(titulo__icontains=titulo) if not libros else libros.filter(titulo__icontains=titulo)
+            libros = modelo.objects.filter(titulo__icontains=titulo) if libros == None else libros.filter(titulo__icontains=titulo)
 
         if(ano):
-            libros = modelo.objects.filter(ano_publicacion__icontains=ano) if not libros else libros.filter(ano_publicacion__icontains=ano)
+            libros = modelo.objects.filter(ano_publicacion__icontains=ano) if libros == None else libros.filter(ano_publicacion__icontains=ano)
 
         if(descriptores):
             for descriptor in descriptores.split(';'):
                 descriptor = descriptor.strip()
-                libros = modelo.objects.filter(descriptores__nombre__icontains=descriptor) if not libros else libros.filter(descriptores__nombre__icontains=descriptor)
+                libros = modelo.objects.filter(descriptores__nombre__icontains=descriptor) if libros == None else libros.filter(descriptores__nombre__icontains=descriptor)
 
-        if(not libros):
-            libros = modelo.objects.none()
-        else:
+        if(libros):
             libros = libros.distinct()
 
         if(archivo):
             libros_sin_dir = [x.pk for x in libros if x.archivo_existe()] if libros else [x.pk for x in modelo.objects.all() if x.archivo_existe()]
-            libros = modelo.objects.filter(pk__in=libros_sin_dir) if not libros else libros.filter(pk__in=libros_sin_dir)
+            libros = modelo.objects.filter(pk__in=libros_sin_dir) if libros == None else libros.filter(pk__in=libros_sin_dir)
         elif(archivo == 0):
             libros_sin_dir = [x.pk for x in libros if not x.archivo_existe()] if libros else [x.pk for x in modelo.objects.all() if not x.archivo_existe()]
-            libros = modelo.objects.filter(pk__in=libros_sin_dir) if not libros else libros.filter(pk__in=libros_sin_dir)
+            libros = modelo.objects.filter(pk__in=libros_sin_dir) if libros == None else libros.filter(pk__in=libros_sin_dir)
 
+        # Si se está usando htmx y se están enviando parámetros de búsqueda (Filtrado), se guardarán los mismos para que se mantengan al volver a la página
         if(self.request.htmx):
             if(modelo == Libro):
                 self.request.session['params_libros'] = {}
@@ -120,17 +120,16 @@ class BusquedaLibros(ListView):
                 self.request.session['params_informes']['descriptores'] = descriptores
                 self.request.session['params_informes']['ano'] = ano
                 self.request.session['params_informes']['archivo'] = archivo
-
+       
         return libros
     
     def get_queryset(self):
         libros = None
 
-        # Si se está usando htmx y se están enviando parámetros de búsqueda (Filtrado)
+        # Filtrar libros de acuerdo a los parámetros de búsqueda
         libros = self.filtro_libros()
         
         # Si no se está usando htmx y no se están enviando parámetros de búsqueda (Listado/Paginación)
-        print(not self.request.htmx, not libros.count())
         if((all(y == '' for x,y in self.request.GET.items() if x != 'page') or not self.request.htmx) and (not libros or not libros.count())):
             libros = Libro.objects.all()
 
@@ -246,7 +245,9 @@ class BusquedaInformes(LoginRequiredMixin, BusquedaLibros):
         return 'busqueda_informes.html'
     
     def get_context_data(self, **kwargs: Any) -> dict:
-        return {'titulo': 'Búsqueda de Informes Técnicos', **super().get_context_data(**kwargs)}
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Búsqueda de Informes Técnicos'
+        return context
     
     def filtro_libros(self, modelo = Informe):
         informes = super().filtro_libros(modelo)
@@ -254,19 +255,24 @@ class BusquedaInformes(LoginRequiredMixin, BusquedaLibros):
         solicitud_servicio = self.request.GET.get('solicitud_servicio', None)
         programa = self.request.GET.get('programa', None)
 
+        print(informes)
+
         if(not self.request.htmx):
             if(not solicitud_servicio and self.request.session.get('params_informes')):
+                print("A")
                 solicitud_servicio = self.request.session['params_informes']['solicitud_servicio'] if self.request.session['params_informes']['solicitud_servicio'] not in ['', 'None'] else None
             
             if(not programa and self.request.session.get('params_informes')):
+                print("B")
                 programa = self.request.session['params_informes']['programa'] if self.request.session['params_informes']['programa'] not in ['', 'None'] else None
 
+        print(solicitud_servicio, programa)
+
         if(solicitud_servicio):
-            informes = modelo.objects.filter(solicitud_servicio__icontains=solicitud_servicio) if not informes else informes.filter(solicitud_servicio__icontains=solicitud_servicio)
+            informes = modelo.objects.filter(solicitud_servicio__icontains=solicitud_servicio) if informes == None else informes.filter(solicitud_servicio__icontains=solicitud_servicio)
 
         if(programa):
-            informes = modelo.objects.filter(programa__nombre__icontains=programa) if not informes else informes.filter(programa__nombre__icontains=programa)
-        
+           informes = modelo.objects.filter(programa__nombre__icontains=programa) if informes == None else informes.filter(programa__nombre__icontains=programa)
 
         if(self.request.htmx):
             self.request.session['params_informes']['solicitud_servicio'] = solicitud_servicio
@@ -277,13 +283,12 @@ class BusquedaInformes(LoginRequiredMixin, BusquedaLibros):
     def get_queryset(self):
         informes = None
 
-        if(self.request.htmx and len(self.request.GET.keys())):
-            informes = self.filtro_libros()
+        informes = self.filtro_libros()
 
-            if(not informes and len(self.request.GET.keys())):
-                informes = Informe.objects.none()
+        if(not informes and len(self.request.GET.keys())):
+            informes = Informe.objects.none()
         
-        if((not self.request.htmx or all(y == '' for x,y in self.request.GET.items() if x != 'page')) and not informes):
+        if((not self.request.htmx or all(y == '' for x,y in self.request.GET.items() if x != 'page')) and (not informes or not informes.count())):
             informes = Informe.objects.all()
 
         if(informes):

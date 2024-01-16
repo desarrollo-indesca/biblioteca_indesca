@@ -7,28 +7,28 @@
             <h5 class="text-center">Formulario de Filtrado</h5>
             <form class="d-flex flex-column" hx-get="{% url 'busqueda_informes' %}" hx-trigger="submit, change, keyup delay:1s" hx-target="#resultados_informes" hx-indicator="#spinner">               
                 <label for="titulo">Título</label>
-                <input id="titulo" type="text" class="form-control" name="titulo"> <br>
+                <input id="titulo" type="text" class="form-control" name="titulo" value="{% if request.session.params_informes.titulo %}{{request.session.params_informes.titulo}}{%endif%}"> <br>
 
                 <label for="solicitud_servicio">Solicitud de Servicio:</label>
-                <input id="solicitud_servicio" type="text" class="form-control" name="solicitud_servicio"> <br>
+                <input id="solicitud_servicio" type="text" class="form-control" name="solicitud_servicio"  value="{% if request.session.params_informes.solicitud_servicio %}{{request.session.params_informes.solicitud_servicio}}{%endif%}"> <br>
 
                 <label for="programa">Programa</label>
-                <input id="programa" type="text" class="form-control" name="programa"> <br>
+                <input id="programa" type="text" class="form-control" name="programa" value="{% if request.session.params_informes.programa %}{{request.session.params_informes.programa}}{%endif%}"> <br>
                 
                 <label for="autor">Autor</label>
-                <input id="autor" type="text" class="form-control"  name="autor"> <br>
+                <input id="autor" type="text" class="form-control"  name="autor" value="{% if request.session.params_informes.autor %}{{request.session.params_informes.autor}}{%endif%}"> <br>
 
                 <label for="ano">Año</label>
-                <input id="ano" type="text" class="form-control" name="ano"> <br>
+                <input id="ano" type="text" class="form-control" name="ano" value="{% if request.session.params_informes.ano %}{{request.session.params_informes.ano}}{%endif%}"> <br>
 
                 <label for="descriptores">Descriptores</label>
-                <input id="descriptores"  type="text" class="form-control" name="descriptores" placeholder="Separe con ';'"> <br>
+                <input id="descriptores"  type="text" class="form-control" name="descriptores" placeholder="Separe con ';'" value="{% if request.session.params_informes.descriptores %}{{request.session.params_informes.descriptores}}{%endif%}"> <br>
 
                 <label for="">Lectura Digital:</label>
                 <select class="form-select" name="archivo" id="archivo">
                     <option value="">-----------------</option>
-                    <option value="0">No</option>
-                    <option value="1">Sí</option>
+                    <option value="0" {% if request.session.params_informes.descriptores == '0' %}selected{% endif %}>No</option>
+                    <option value="1" {% if request.session.params_informes.descriptores == '1' %}selected{% endif %}>Sí</option>
                 </select> <br>
 
                 <div class="d-flex justify-content-center">
