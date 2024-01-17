@@ -25,7 +25,7 @@ LOGIN_URL = 'bienvenida'
 SECRET_KEY = 'django-insecure-(m=4yu3gx#(&!u^8vi!n^nkmix2&7)uda(*9kic*k9(_s95tui'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1']
 SESSION_COOKIE_AGE = 8 * 60 * 60

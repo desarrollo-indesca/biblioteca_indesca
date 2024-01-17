@@ -44,7 +44,7 @@
                 </div>
                 {% if form.archivo.errors %}<span>{% for error in form.archivo.errors %}{{error}} {% endfor %}</span>{% endif %}
                 {% if object.archivo and object.archivo_existe %}
-                <small><a href="/media/{{object.archivo}}" target="_blank">Ya hay un archivo cargado.</a></small>
+                <small><a href="{% url 'leer_libro' pk=object.pk %}" target="_blank">Ya hay un archivo cargado.</a></small>
                 {% endif %}
             </div>
             <div class="form-group col-12">
