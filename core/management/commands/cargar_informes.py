@@ -52,8 +52,6 @@ class Command(BaseCommand):
                 else:
                     continue
 
-                print(f"{informe.archivo}")
-
                 informe.save()
 
                 descriptores = []                    
