@@ -54,10 +54,18 @@
     </div>
 
     {% if forloop.last and page_obj.has_next %}
-      <p class="text-center" 
+    {% if request.htmx %}
+    <p class="text-center" 
       hx-get="?page={{page_obj.next_page_number}}&autor={{request.GET.autor}}&titulo={{request.GET.titulo}}&ano={{request.GET.ano}}&descriptores={{request.GET.descriptores}}&archivo={{request.GET.archivo}}"
       hx-trigger="intersect once"
       hx-swap="outerHTML" hx-indicator="#spinner">Cargando...</p>
+    {% else %}
+    <p class="text-center" 
+      hx-get="?page={{page_obj.next_page_number}}&autor={{request.session.params_libros.autor}}&titulo={{request.session.params_libros.titulo}}&ano={{request.session.params_libros.ano}}&descriptores={{request.session.params_libros.descriptores}}&archivo={{request.session.params_libros.archivo}}"
+      hx-trigger="intersect once"
+      hx-swap="outerHTML" hx-indicator="#spinner">Cargando...</p>
+    {% endif %}
+      
     {% endif %}
 
     {% empty %}
