@@ -14,4 +14,7 @@ urlpatterns = [
 
     path('lectura/libro/<int:pk>/', obtener_archivo_libro, name='leer_libro'),
     path('lectura/informe/<int:pk>/', obtener_archivo_informe, name='leer_informe'),
+
+    path('experimental/descriptores/<int:pk>/', generar_descriptores, name="generar_descriptores"),
+    path('experimental/resumen/<int:pk>/', generar_resumen, name="generar_resumen")
 ]

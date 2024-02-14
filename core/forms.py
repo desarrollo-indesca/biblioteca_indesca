@@ -3,7 +3,7 @@ from .models import Libro, Descriptor, Informe
 from django.db import transaction 
 
 class GuardadoDescriptoresMixin(forms.ModelForm):
-    descriptores = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Separe cada descriptor con el carácter ";"'}))
+    descriptores = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Separe cada descriptor con el carácter ";"', 'rows': 3}))
 
     def clean_titulo(self):
         return self.cleaned_data['titulo'].upper()
