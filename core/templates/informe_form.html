@@ -75,7 +75,7 @@
             </div>
 
             <div class="form-group col-12">
-                <label for="resumen">Resumen:</label> {% if object and object.archivo and object.archivo_existe %}<small> &nbsp; <button class="btn btn-info" hx-get="{% url 'generar_resumen' pk=object.pk %}" hx-target="#id_resumen">Generar Resumen</button></small>{%endif%}
+                <label for="resumen">Resumen:</label> {% if object and object.archivo and object.archivo_existe and False %}<small> &nbsp; <button class="btn btn-info" hx-get="{% url 'generar_resumen' pk=object.pk %}" hx-target="#id_resumen">Generar Resumen</button></small>{%endif%}
                 {% render_field form.resumen class="form-control" %}
                 {% if form.resumen.errors %}<small> {% for error in form.resumen.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
