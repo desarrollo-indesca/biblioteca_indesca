@@ -1,12 +1,12 @@
 from typing import Any
-from django.forms.models import BaseModelForm
 from django.views.generic import ListView, CreateView, UpdateView
 from django.http import HttpResponse
 from .models import Libro, Informe
 from .forms import LibroForm, InformeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from usuarios.views import SuperUserRequiredMixin
-from django.urls import reverse
+from .utils import *
+from django.shortcuts import render
 
 # Create your views here.
 class BusquedaLibros(ListView):
@@ -40,13 +40,13 @@ class BusquedaLibros(ListView):
         return 'busqueda_libros.html'
     
     def filtro_libros(self, modelo = Libro):
-        autor = self.request.GET.get('autor', None) if self.request.GET.get('autor', None) and self.request.GET.get('autor', None) not in ['','None'] else None
-        titulo = self.request.GET.get('titulo', None) if self.request.GET.get('titulo', None) and self.request.GET.get('titulo', None) not in ['','None'] else None
-        descriptores = self.request.GET.get('descriptores', None) if self.request.GET.get('descriptores', None) and self.request.GET.get('descriptores', None) not in ['','None'] else None
-        ano = self.request.GET.get('ano', None) if self.request.GET.get('ano', None) and self.request.GET.get('ano', None) not in ['','None'] else None
-        archivo = int(self.request.GET.get('archivo', 0)) if self.request.GET.get('archivo', None) and self.request.GET.get('archivo') not in ['', 'None'] else None
+        autor = self.request.GET.get('autor') if self.request.GET.get('autor') and self.request.GET.get('autor') not in ['','None'] else None
+        titulo = self.request.GET.get('titulo') if self.request.GET.get('titulo') and self.request.GET.get('titulo') not in ['','None'] else None
+        descriptores = self.request.GET.get('descriptores') if self.request.GET.get('descriptores') and self.request.GET.get('descriptores') not in ['','None'] else None
+        ano = self.request.GET.get('ano') if self.request.GET.get('ano') and self.request.GET.get('ano') not in ['','None'] else None
+        archivo = int(self.request.GET.get('archivo', 0)) if self.request.GET.get('archivo') and self.request.GET.get('archivo') not in ['', 'None'] else None
 
-        # Aquí el session se utiliza para guardar los parámetros de búsqueda para que se mantengan al cambiar de página
+        # Aquí el session se utiliza para guardar los parámetros de búsqueda para que se mantengan al cambiar de página si y solo si no se está usando htmx (request GET normal)
         if(not self.request.htmx):
             if(not autor and (self.request.session.get('params_libros') or self.request.session.get('params_informes'))):
                 if(modelo == Libro):
@@ -80,27 +80,27 @@ class BusquedaLibros(ListView):
 
         libros = None
 
-        if(autor):
+        if(autor): # Si se está buscando por autor, se filtra por autor. Se usa todo el modelo por defecto
             libros = modelo.objects.filter(autores__icontains=autor)
         
-        if(titulo):
+        if(titulo): # Si se está buscando por título, se filtra por título. Se usa todo el modelo si no hay nada en la variable libros (por no pasar por búsquedas anteriores), sino se filtra lo ya filtrado
             libros = modelo.objects.filter(titulo__icontains=titulo) if libros == None else libros.filter(titulo__icontains=titulo)
 
-        if(ano):
+        if(ano): # Si se está buscando por año, se filtra por año. Se usa todo el modelo si no hay nada en la variable libros (por no pasar por búsquedas anteriores), sino se filtra lo ya filtrado
             libros = modelo.objects.filter(ano_publicacion__icontains=ano) if libros == None else libros.filter(ano_publicacion__icontains=ano)
 
-        if(descriptores):
-            for descriptor in descriptores.split(';'):
+        if(descriptores): # Si se está buscando por descriptores, se filtra por descriptores. Se usa todo el modelo si no hay nada en la variable libros (por no pasar por búsquedas anteriores), sino se filtra lo ya filtrado
+            for descriptor in descriptores.split(';'): # Se itera sobre los descriptores separados por ; para filtrar por cada uno de ellos
                 descriptor = descriptor.strip()
                 libros = modelo.objects.filter(descriptores__nombre__icontains=descriptor) if libros == None else libros.filter(descriptores__nombre__icontains=descriptor)
 
-        if(libros):
+        if(libros): # Se eliminan los duplicados ya que un libro puede tener varios descriptores (muchos a muchos)
             libros = libros.distinct()
 
-        if(archivo):
+        if(archivo): # Si se está buscando por archivo, se filtra por archivo. Se usa todo el modelo si no hay nada en la variable libros (por no pasar por búsquedas anteriores), sino se filtra lo ya filtrado
             libros_sin_dir = [x.pk for x in libros if x.archivo_existe()] if libros else [x.pk for x in modelo.objects.all() if x.archivo_existe()]
             libros = modelo.objects.filter(pk__in=libros_sin_dir) if libros == None else libros.filter(pk__in=libros_sin_dir)
-        elif(archivo == 0):
+        elif(archivo == 0): # 0 indica que se está buscando por libros sin archivo
             libros_sin_dir = [x.pk for x in libros if not x.archivo_existe()] if libros else [x.pk for x in modelo.objects.all() if not x.archivo_existe()]
             libros = modelo.objects.filter(pk__in=libros_sin_dir) if libros == None else libros.filter(pk__in=libros_sin_dir)
 
@@ -129,7 +129,7 @@ class BusquedaLibros(ListView):
         # Filtrar libros de acuerdo a los parámetros de búsqueda
         libros = self.filtro_libros()
         
-        # Si no se está usando htmx y no se están enviando parámetros de búsqueda (Listado/Paginación)
+        # Si no se está usando htmx y no se están enviando parámetros de búsqueda se envían todos los registros
         if((all(y == '' for x,y in self.request.GET.items() if x != 'page') or not self.request.htmx) and (not libros or not libros.count())):
             libros = Libro.objects.all()
 
@@ -252,25 +252,23 @@ class BusquedaInformes(LoginRequiredMixin, BusquedaLibros):
     def filtro_libros(self, modelo = Informe):
         informes = super().filtro_libros(modelo)
 
-        solicitud_servicio = self.request.GET.get('solicitud_servicio', None)
-        programa = self.request.GET.get('programa', None)
+        solicitud_servicio = self.request.GET.get('solicitud_servicio')
+        programa = self.request.GET.get('programa')
 
-        print(informes)
-
-        if(not self.request.htmx):
+        if(not self.request.htmx): # Si no se está usando htmx, se obtienen los parámetros de búsqueda de la sesión ya que no es una búsqueda nueva
             if(not solicitud_servicio and self.request.session.get('params_informes')):
                 solicitud_servicio = self.request.session['params_informes']['solicitud_servicio'] if self.request.session.get('params_informes') and self.request.session['params_informes']['solicitud_servicio'] not in ['', 'None'] else None
             
             if(not programa and self.request.session.get('params_informes')):
                 programa = self.request.session['params_informes']['programa'] if self.request.session.get('params_informes') and self.request.session['params_informes']['programa'] not in ['', 'None'] else None
 
-        if(solicitud_servicio):
+        if(solicitud_servicio): # Si se está buscando por solicitud de servicio, se filtra por solicitud de servicio. Se usa todo el modelo si no hay nada en la variable informes (por no pasar por búsquedas anteriores)
             informes = modelo.objects.filter(solicitud_servicio__icontains=solicitud_servicio) if informes == None else informes.filter(solicitud_servicio__icontains=solicitud_servicio)
 
-        if(programa):
+        if(programa): # Si se está buscando por programa, se filtra por programa. Se usa todo el modelo si no hay nada en la variable informes (por no pasar por búsquedas anteriores)
            informes = modelo.objects.filter(programa__nombre__icontains=programa) if informes == None else informes.filter(programa__nombre__icontains=programa)
 
-        if(self.request.htmx):
+        if(self.request.htmx): # Cuando se hace una consulta con htmx, se guardan los parámetros de búsqueda para que se mantengan al volver a la página
             self.request.session['params_informes']['solicitud_servicio'] = solicitud_servicio
             self.request.session['params_informes']['programa'] = programa
 
@@ -281,14 +279,15 @@ class BusquedaInformes(LoginRequiredMixin, BusquedaLibros):
 
         informes = self.filtro_libros()
 
-        if(not informes and len(self.request.GET.keys())):
+        if(not informes and len(self.request.GET.keys())): # Si no hay informes y se están enviando parámetros de búsqueda, se usa un QueryDict vacío para que no se muestre nada
             informes = Informe.objects.none()
-        
+
+        # Si no se está usando htmx y no se están enviando parámetros de búsqueda se envían todos los registros        
         if((not self.request.htmx or all(y == '' for x,y in self.request.GET.items() if x != 'page')) and (not informes or not informes.count())):
             informes = Informe.objects.all()
 
         if(informes):
-            informes.prefetch_related('descriptores')
+            informes.prefetch_related('descriptores') # Para mejorar la eficiencia
 
         return informes
 
@@ -416,7 +415,6 @@ def obtener_archivo_informe(request, pk):
             informe = Informe.objects.get(id=pk)
             if(informe.archivo_existe()):
                 with open(informe.archivo.path, 'rb') as f:
-                    print(informe.archivo.name)
                     if(informe.archivo.name.lower().endswith('.pdf')):
                         response = HttpResponse(f.read(), content_type='application/pdf')
                     else:
@@ -429,3 +427,15 @@ def obtener_archivo_informe(request, pk):
             return HttpResponse(status=403)
     except:
         return HttpResponse(status=404)
+    
+def generar_descriptores(request, pk, tipo="informe"):
+    informe = Informe.objects.get(pk=pk) if tipo == 'informe' else Libro.objects.get(pk=pk)
+    descriptores = generar_descriptores_publicacion(informe, request.GET.get('previos'))
+
+    return render(request, 'partials/descriptores.html', {'descriptores': descriptores})
+
+def generar_resumen(request, pk):
+    informe = Informe.objects.get(pk=pk)
+    resumen = generar_resumen_publicacion(informe)
+
+    return HttpResponse(resumen)
