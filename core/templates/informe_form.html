@@ -4,14 +4,23 @@
 
 {% block contenido %}
 <div style="min-height: 90vh;" class="container">
-    <h2 class="text-center">{{titulo}}</h2>
+    <div class="row">
+        <div class="col-3 d-flex justify-content-center align-items-center">
+            <a href="{% url 'busqueda_informes' %}?titulo={{request.session.params_informes.titulo}}&autor={{request.session.params_informes.autor}}&ano={{request.session.params_informes.ano}}&descriptores={{request.session.params_informes.descriptores}}&archivo={{request.session.params_informes.archivo}}&solicitud_servicio={{request.session.params_informes.solicitud_servicio}}&programa={{request.session.params_informes.programa}}" 
+                    class="btn btn-secondary">↶ Regresar</a>&nbsp;
+        </div>
+        <div class="col-6">
+            <h2 class="text-center">{{titulo}}</h2>
+        </div>
+        <div class="col-3"></div>
+    </div>
     <hr>
 
     <form method="post" enctype="multipart/form-data" onSubmit="document.getElementById('submit').disabled=true;">
         {% csrf_token %}
     
         <div class="row g-2">
-            <div class="col-12">
+            <div class="col-6">
                 <h4 class="text-center mb-3">Datos Del Proyecto</h4>
             </div>
 
@@ -69,7 +78,7 @@
                 {% endif %}
             </div>
             <div class="form-group col-12">
-                <label for="direccion">Descriptores (separe con ;):</label>  {% if object and object.archivo and object.archivo_existe %}&nbsp; <button style="height: 30px; padding-top: 0%;" class="btn btn-info" hx-vals="js:{previos: document.getElementById('id_descriptores').innerHTML.split(';')}" hx-swap="beforeend" hx-get="{% url 'generar_descriptores' pk=object.pk tipo='informe' %}" hx-target="#id_descriptores"><small>Generar Descriptores</small></button>{%endif%}
+                <label for="direccion">Descriptores (separe con ;):</label>  {% if object and object.archivo and object.archivo_existe %}&nbsp; <button style="height: 30px; padding-top: 0%;" class="btn btn-info" hx-indicator="#spinner" hx-vals="js:{previos: document.getElementById('id_descriptores').innerHTML.split(';')}" hx-swap="beforeend" hx-get="{% url 'generar_descriptores' pk=object.pk tipo='informe' %}" hx-target="#id_descriptores"><small>Generar Descriptores</small></button>{%endif%}
                 {% render_field form.descriptores class="form-control" %}
                 {% if form.descriptores.errors %}<small> {% for error in form.descriptores.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
@@ -81,8 +90,6 @@
             </div>
 
             <div class="col-12 d-flex justify-content-center mt-3 mb-3">
-                <a href="{% url 'busqueda_informes' %}?titulo={{request.session.params_informes.titulo}}&autor={{request.session.params_informes.autor}}&ano={{request.session.params_informes.ano}}&descriptores={{request.session.params_informes.descriptores}}&archivo={{request.session.params_informes.archivo}}&solicitud_servicio={{request.session.params_informes.solicitud_servicio}}&programa={{request.session.params_informes.programa}}" 
-                    class="btn btn-secondary">↶ Regresar</a>&nbsp;
                 <button type="submit" class="btn btn-danger" id="submit">Enviar Formulario</button>
             </div>
             
