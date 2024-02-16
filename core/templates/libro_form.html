@@ -4,7 +4,16 @@
 
 {% block contenido %}
 <div style="min-height: 90vh;" class="container">
-    <h2 class="text-center">{{titulo}}</h2>
+    <div class="row">
+        <div class="col-3 d-flex justify-content-center align-items-center">
+            <a href="{% url 'busqueda_informes' %}?titulo={{request.session.params_informes.titulo}}&autor={{request.session.params_informes.autor}}&ano={{request.session.params_informes.ano}}&descriptores={{request.session.params_informes.descriptores}}&archivo={{request.session.params_informes.archivo}}&solicitud_servicio={{request.session.params_informes.solicitud_servicio}}&programa={{request.session.params_informes.programa}}" 
+                    class="btn btn-secondary">↶ Regresar</a>&nbsp;
+        </div>
+        <div class="col-6">
+            <h2 class="text-center">{{titulo}}</h2>
+        </div>
+        <div class="col-3"></div>
+    </div>
     <hr>
 
     <form method="post" enctype="multipart/form-data" onSubmit="document.getElementById('submit').disabled=true;">
@@ -40,7 +49,7 @@
             <div class="form-group col-12">
                 <label for="descriptores">Documento:</label>
                 <div class="input-group">
-                    <input type="file" name="archivo" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="form-control" id="id_archivo">
+                    <input type="file" name="archivo" accept="application/pdf" class="form-control" id="id_archivo">
                 </div>
                 {% if form.archivo.errors %}<span>{% for error in form.archivo.errors %}{{error}} {% endfor %}</span>{% endif %}
                 {% if object.archivo and object.archivo_existe %}
@@ -48,8 +57,8 @@
                 {% endif %}
             </div>
             <div class="form-group col-12">
-                <label for="direccion">Descriptores (separe con ;):</label>
-                {% render_field form.descriptores class="form-control" %}
+                <label for="direccion">Descriptores (separe con ;):</label>{% if object and object.archivo and object.archivo_existe %}&nbsp; <button style="height: 30px; padding-top: 0%;" hx-indicator="#spinner" class="btn btn-info" hx-swap="beforeend" hx-get="{% url 'generar_descriptores' pk=object.pk tipo='libro' %}" hx-target="#id_descriptores"><small>Generar Descriptores</small></button>{%endif%}
+                {% render_field form.descriptores class="form-control" %} 
                 {% if form.descriptores.errors %}<span>{% for error in form.descriptores.errors %}{{error}} {% endfor %}</span>{% endif %}
             </div>
 

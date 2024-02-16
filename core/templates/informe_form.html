@@ -4,14 +4,23 @@
 
 {% block contenido %}
 <div style="min-height: 90vh;" class="container">
-    <h2 class="text-center">{{titulo}}</h2>
+    <div class="row">
+        <div class="col-3 d-flex justify-content-center align-items-center">
+            <a href="{% url 'busqueda_informes' %}?titulo={{request.session.params_informes.titulo}}&autor={{request.session.params_informes.autor}}&ano={{request.session.params_informes.ano}}&descriptores={{request.session.params_informes.descriptores}}&archivo={{request.session.params_informes.archivo}}&solicitud_servicio={{request.session.params_informes.solicitud_servicio}}&programa={{request.session.params_informes.programa}}" 
+                    class="btn btn-secondary">↶ Regresar</a>&nbsp;
+        </div>
+        <div class="col-6">
+            <h2 class="text-center">{{titulo}}</h2>
+        </div>
+        <div class="col-3"></div>
+    </div>
     <hr>
 
     <form method="post" enctype="multipart/form-data" onSubmit="document.getElementById('submit').disabled=true;">
         {% csrf_token %}
     
         <div class="row g-2">
-            <div class="col-12">
+            <div class="col-6">
                 <h4 class="text-center mb-3">Datos Del Proyecto</h4>
             </div>
 
@@ -61,7 +70,7 @@
             <div class="form-group col-12">
                 <label for="descriptores">Documento:</label>
                 <div class="input-group">
-                    <input type="file" name="archivo" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="form-control" id="id_archivo">
+                    <input type="file" name="archivo" accept="application/pdf" class="form-control" id="id_archivo">
                     {% if form.archivo.errors %}<small> {% for error in form.archivo.errors %}{{error}} {% endfor %}</small>{%endif%}
                 </div>
                 {% if object.archivo and object.archivo_existe %}
@@ -69,20 +78,18 @@
                 {% endif %}
             </div>
             <div class="form-group col-12">
-                <label for="direccion">Descriptores (separe con ;):</label>
+                <label for="direccion">Descriptores (separe con ;):</label>  {% if object and object.archivo and object.archivo_existe %}&nbsp; <button style="height: 30px; padding-top: 0%;" class="btn btn-info" hx-indicator="#spinner" hx-vals="js:{previos: document.getElementById('id_descriptores').innerHTML.split(';')}" hx-swap="beforeend" hx-get="{% url 'generar_descriptores' pk=object.pk tipo='informe' %}" hx-target="#id_descriptores"><small>Generar Descriptores</small></button>{%endif%}
                 {% render_field form.descriptores class="form-control" %}
                 {% if form.descriptores.errors %}<small> {% for error in form.descriptores.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
 
             <div class="form-group col-12">
-                <label for="resumen">Resumen:</label>
+                <label for="resumen">Resumen:</label> {% if object and object.archivo and object.archivo_existe and False %}<small> &nbsp; <button class="btn btn-info" hx-get="{% url 'generar_resumen' pk=object.pk %}" hx-target="#id_resumen">Generar Resumen</button></small>{%endif%}
                 {% render_field form.resumen class="form-control" %}
                 {% if form.resumen.errors %}<small> {% for error in form.resumen.errors %}{{error}} {% endfor %}</small>{%endif%}
             </div>
 
             <div class="col-12 d-flex justify-content-center mt-3 mb-3">
-                <a href="{% url 'busqueda_informes' %}?titulo={{request.session.params_informes.titulo}}&autor={{request.session.params_informes.autor}}&ano={{request.session.params_informes.ano}}&descriptores={{request.session.params_informes.descriptores}}&archivo={{request.session.params_informes.archivo}}&solicitud_servicio={{request.session.params_informes.solicitud_servicio}}&programa={{request.session.params_informes.programa}}" 
-                    class="btn btn-secondary">↶ Regresar</a>&nbsp;
                 <button type="submit" class="btn btn-danger" id="submit">Enviar Formulario</button>
             </div>
             
