@@ -22,17 +22,19 @@ def cargar_texto_publicacion(publicacion, desde = 0, hasta = -1):
 
     return text
 
-def generar_descriptores_publicacion(publicacion):
+def generar_descriptores_publicacion(publicacion, previos):
     try:
         # Primero, obtener el texto. Arrojar None si ocurre un error
         text = cargar_texto_publicacion(publicacion)
 
         # Segundo, crear objeto KeywordExtractor
-        kw_exractor = yake.KeywordExtractor(top=10, stopwords=STOPWORDS, n = 3)
+        keywords = []
+        n = 2
+        while(len(keywords) < 20):
+            kw_exractor = yake.KeywordExtractor(top=10, stopwords=STOPWORDS, n = n)
+            keywords += [x[0] for x in kw_exractor.extract_keywords(text) if x[0] not in previos and x[0] not in keywords]
+            n += 1
 
-        # Tercero, obtener palabras clave y devolver 
-        keywords = [x[0] for x in kw_exractor.extract_keywords(text)]
-        print(keywords)
         return keywords
     
     except Exception as e:

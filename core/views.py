@@ -428,9 +428,9 @@ def obtener_archivo_informe(request, pk):
     except:
         return HttpResponse(status=404)
     
-def generar_descriptores(request, pk):
-    informe = Informe.objects.get(pk=pk)
-    descriptores = generar_descriptores_publicacion(informe)
+def generar_descriptores(request, pk, tipo="informe"):
+    informe = Informe.objects.get(pk=pk) if tipo == 'informe' else Libro.objects.get(pk=pk)
+    descriptores = generar_descriptores_publicacion(informe, request.GET.get('previos'))
 
     return render(request, 'partials/descriptores.html', {'descriptores': descriptores})
 
