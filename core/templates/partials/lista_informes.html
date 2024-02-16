@@ -30,7 +30,7 @@
             
             {% if informe.archivo and informe.archivo_existe %}
             <div>
-                <a href="{% url 'leer_informe' pk=informe.pk %}" target="new" class="btn btn-danger">Lectura Digital</a>
+                <a href="{% url 'leer_informe' pk=informe.pk %}" target="_blank" class="btn btn-danger">Lectura Digital</a>
             </div>
             {%endif%}
 
