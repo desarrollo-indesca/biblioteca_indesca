@@ -62,7 +62,7 @@
       hx-swap="outerHTML" hx-indicator="#spinner">Cargando...</p>
     {% else %}
     <p class="text-center" 
-      hx-get="?page={{page_obj.next_page_number}}&autor={{request.session.params_informes.autor}}&titulo={{request.session.params_informes.titulo}}&ano={{request.session.params_informes.ano}}&descriptores={{request.session.params_informes.descriptores}}&solicitud_servicio={{request.session.params_informes.solicitud_servicio}}&programa={{request.session.params_informes.programa}}&archivo={{request.GET.archivo}}"
+      hx-get="?page={{page_obj.next_page_number}}&autor={% if request.session.params_informes.autor %}{{request.session.params_informes.autor}}{% endif %}&titulo={% if request.session.params_informes.titulo %}{{request.session.params_informes.titulo}}{% endif %}&ano={% if request.session.params_informes.ano %}{{request.session.params_informes.ano}}{% endif %}&descriptores={% if request.session.params_informes.descriptores %}{{request.session.params_informes.descriptores}}{% endif %}&solicitud_servicio={% if request.session.params_informes.solicitud_servicio %}{{request.session.params_informes.solicitud_servicio}}{% endif %}&programa={% if request.session.params_informes.programa %}{{request.session.params_informes.programa}}{% endif %}&archivo={{request.GET.archivo}}"
       hx-trigger="intersect once"
       hx-swap="outerHTML" hx-indicator="#spinner">Cargando...</p>    
     {% endif %}
