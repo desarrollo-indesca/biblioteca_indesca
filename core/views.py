@@ -432,7 +432,7 @@ def generar_descriptores(request, pk, tipo="informe"):
     informe = Informe.objects.get(pk=pk) if tipo == 'informe' else Libro.objects.get(pk=pk)
     descriptores = generar_descriptores_publicacion(informe, request.GET.get('previos'))
 
-    return render(request, 'partials/descriptores.html', {'descriptores': descriptores})
+    return render(request, 'partials/descriptores.html', {'descriptores': descriptores, 'previos': len(request.GET.get('previos'))})
 
 def generar_resumen(request, pk):
     informe = Informe.objects.get(pk=pk)
