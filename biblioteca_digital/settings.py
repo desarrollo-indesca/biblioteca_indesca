@@ -55,6 +55,7 @@ AUTH_LDAP_GROUP_CACHE_TIMEOUT = 1  # 1 hour cache
 
 AUTH_LDAP_MIRROR_GROUPS = True
 AUTHENTICATION_BACKENDS = [
+    'django_remote_auth_ldap.backend.RemoteUserLDAPBackend',
     'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
@@ -106,6 +107,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django_htmx.middleware.HtmxMiddleware",
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_remote_auth_ldap.middleware.RemoteUserMiddleware',
 ]
 
 ROOT_URLCONF = 'biblioteca_digital.urls'
