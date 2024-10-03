@@ -71,3 +71,7 @@
     {% empty %}
     <p class="text-center">No se encontraron resultados para su búsqueda.</p>    
     {% endfor %}  
+
+<div class="hidden" style="opacity: 0;">
+  <span hx-swap-oob="true" id="numero_informes">{{paginator.count}}</span>
+</div>

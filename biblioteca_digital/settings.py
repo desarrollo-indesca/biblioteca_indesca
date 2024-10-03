@@ -69,8 +69,7 @@ LOGIN_URL = 'bienvenida'
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open('C:/website2/biblioteca_digital/secret-key.txt','r') as f:
-    SECRET_KEY = f.read()
+SECRET_KEY = "JAMMU"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -134,20 +133,19 @@ WSGI_APPLICATION = 'biblioteca_digital.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-with open('C:/website2/biblioteca_digital/db-key.txt') as f:
-    DATABASES = {
+DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'biblioteca_digital',  
             'USER': 'root',  
-            'PASSWORD': f.read(),  
+            'PASSWORD': "",  
             'HOST': 'localhost',  
             'PORT': '3306',  
             'OPTIONS': {  
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
             }  
         }
-    }
+}
 
 TEMPLATES = [
     {
